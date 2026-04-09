@@ -600,30 +600,39 @@ function changePassword(){
   document.getElementById("pwd-new").value=""; document.getElementById("pwd-confirm").value="";
 }
 
-function exportSite(){
-  // Snapshot the current pool from memory (includes any unsaved edits would need saving first)
-  const poolJson = JSON.stringify(POOL, null, 2);
-
-  // Replace the DEFAULT_POOL block in this page's own source with the live pool data
-  const src = document.documentElement.outerHTML;
-
-  // Find the DEFAULT_POOL declaration and replace it
-  const startMarker = 'const DEFAULT_POOL = [';
-  const endMarker   = '];\n\n// ';   // matches end of array before next comment block
-
-  const startIdx = src.indexOf(startMarker);
-  const endIdx   = src.indexOf(endMarker, startIdx);
-
-  if(startIdx === -1 || endIdx === -1){
-    alert('Export failed: could not locate pool data in page source. Please report this.');
+async function exportSite(){
+  // Fetch the original raw HTML source (avoids browser DOM serialization mangling the JS)
+  let src;
+  try{
+    const resp = await fetch(location.href);
+    if(!resp.ok) throw new Error('HTTP ' + resp.status);
+    src = await resp.text();
+  }catch(e){
+    alert('Export failed: could not fetch page source.\n' + e.message);
     return;
   }
 
-  // Build replacement: keep everything before DEFAULT_POOL, insert current pool, keep rest
-  const before = src.slice(0, startIdx);
-  const after  = src.slice(endIdx);
-  const newPoolBlock = 'const DEFAULT_POOL = ' + poolJson;
-  const exported = before + newPoolBlock + '\n\n// ' + after.slice('// '.length);
+  // Find and replace the DEFAULT_POOL block with current live pool data
+  const startMarker = 'const DEFAULT_POOL = [';
+  const endMarker   = '];';
+
+  const startIdx = src.indexOf(startMarker);
+  if(startIdx === -1){ alert('Export failed: could not locate pool data in source.'); return; }
+
+  // Find the closing ]; that ends the DEFAULT_POOL array
+  // Walk forward from startIdx to find the matching ];
+  let depth = 0, endIdx = -1;
+  for(let i = startIdx + startMarker.length; i < src.length - 1; i++){
+    if(src[i] === '[') depth++;
+    else if(src[i] === ']' && src[i+1] === ';' && depth === 0){ endIdx = i + 2; break; }
+    else if(src[i] === ']') depth--;
+  }
+  if(endIdx === -1){ alert('Export failed: could not find end of pool data.'); return; }
+
+  const poolJson = JSON.stringify(POOL, null, 2);
+  const exported = src.slice(0, startIdx)
+    + 'const DEFAULT_POOL = ' + poolJson + ';'
+    + src.slice(endIdx);
 
   // Trigger download
   const blob = new Blob([exported], {type:'text/html'});
