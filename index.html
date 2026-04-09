@@ -274,14 +274,15 @@ var nextRefresh   = null;
 var countdownTimer = null;
 
 function loadPool() {
-  // DEFAULT_POOL is the source of truth — updated at export time.
-  // Fall back to localStorage only if DEFAULT_POOL hasn't been populated yet.
-  if (DEFAULT_POOL.length && DEFAULT_POOL[0].picks && DEFAULT_POOL[0].picks[0]) {
-    return DEFAULT_POOL.map(function(p) { return {name:p.name, picks:p.picks.slice()}; });
-  }
+  // localStorage takes priority — this is where manually-entered picks live.
+  // After export, DEFAULT_POOL has the picks baked in and localStorage on other
+  // devices will be empty, so they naturally fall through to DEFAULT_POOL.
   try {
     var s = localStorage.getItem(POOL_KEY);
-    if (s) return JSON.parse(s);
+    if (s) {
+      var parsed = JSON.parse(s);
+      if (parsed && parsed.length) return parsed;
+    }
   } catch(e) {}
   return DEFAULT_POOL.map(function(p) { return {name:p.name, picks:p.picks.slice()}; });
 }
