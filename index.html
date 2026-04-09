@@ -150,6 +150,12 @@
   .btn-change-pwd:hover{background:rgba(224,123,90,0.35);}
   .admin-logout{background:transparent;border:1px solid #2a3a2a;color:var(--text-dim);border-radius:6px;padding:8px 14px;font-size:12px;cursor:pointer;margin-top:16px;float:right;transition:all 0.2s;}
   .admin-logout:hover{border-color:var(--red);color:var(--red);}
+  .export-section{background:rgba(201,162,39,0.05);border:1px solid rgba(201,162,39,0.2);border-radius:10px;padding:16px 18px;margin-top:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .export-section-title{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:3px;}
+  .export-section-desc{font-size:11px;color:#6a7a5a;line-height:1.6;}
+  .export-section-text{flex:1;}
+  .btn-export{background:var(--gold);color:#000;border:none;border-radius:8px;padding:11px 20px;font-weight:700;font-size:13px;letter-spacing:0.5px;cursor:pointer;white-space:nowrap;transition:opacity 0.2s;flex-shrink:0;}
+  .btn-export:hover{opacity:0.85;}
 
   /* ── Login modal ── */
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;z-index:500;display:none;}
@@ -291,6 +297,9 @@ let nextRefresh = null;   // timestamp of next auto-refresh
 let countdownTimer = null;
 
 function loadPool(){
+  // Always use DEFAULT_POOL as the source of truth (baked in at export time).
+  // localStorage is only used as a fallback during live editing before export.
+  if(DEFAULT_POOL.length && DEFAULT_POOL[0].picks.some(p=>p)) return DEFAULT_POOL.map(p=>({...p,picks:[...p.picks]}));
   try{ const s=localStorage.getItem(POOL_KEY); if(s) return JSON.parse(s); }catch(e){}
   return DEFAULT_POOL.map(p=>({...p,picks:[...p.picks]}));
 }
@@ -533,9 +542,16 @@ function renderEditor(){
         <button class="btn-change-pwd" onclick="changePassword()">Update</button>
       </div>
     </div>
+    <div class="export-section">
+      <div class="export-section-text">
+        <div class="export-section-title">📥 Export & Deploy</div>
+        <div class="export-section-desc">Downloads a fresh <strong>index.html</strong> with the current picks baked in — ready to upload to GitHub. Anyone who loads the page will see the latest picks without needing to sync anything.</div>
+      </div>
+      <button class="btn-export" onclick="exportSite()">⬇ Export index.html</button>
+    </div>
     <div style="text-align:right;margin-top:8px;">
       <button class="admin-logout" onclick="doLogout()">🚪 Log out of admin</button>
-    </div>`;
+    </div>\`;
 }
 
 function renderPCard(p,idx){
@@ -582,6 +598,42 @@ function changePassword(){
   if(p1.length<4){ alert("Password must be at least 4 characters."); return; }
   localStorage.setItem(PWD_KEY,p1); showToast("✓ Password updated");
   document.getElementById("pwd-new").value=""; document.getElementById("pwd-confirm").value="";
+}
+
+function exportSite(){
+  // Snapshot the current pool from memory (includes any unsaved edits would need saving first)
+  const poolJson = JSON.stringify(POOL, null, 2);
+
+  // Replace the DEFAULT_POOL block in this page's own source with the live pool data
+  const src = document.documentElement.outerHTML;
+
+  // Find the DEFAULT_POOL declaration and replace it
+  const startMarker = 'const DEFAULT_POOL = [';
+  const endMarker   = '];\n\n// ';   // matches end of array before next comment block
+
+  const startIdx = src.indexOf(startMarker);
+  const endIdx   = src.indexOf(endMarker, startIdx);
+
+  if(startIdx === -1 || endIdx === -1){
+    alert('Export failed: could not locate pool data in page source. Please report this.');
+    return;
+  }
+
+  // Build replacement: keep everything before DEFAULT_POOL, insert current pool, keep rest
+  const before = src.slice(0, startIdx);
+  const after  = src.slice(endIdx);
+  const newPoolBlock = 'const DEFAULT_POOL = ' + poolJson;
+  const exported = before + newPoolBlock + '\n\n// ' + after.slice('// '.length);
+
+  // Trigger download
+  const blob = new Blob([exported], {type:'text/html'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'index.html';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✓ index.html downloaded — upload to GitHub to go live');
 }
 
 function toggleRow(name){ openRow=openRow===name?null:name; renderLeaderboard(); }
