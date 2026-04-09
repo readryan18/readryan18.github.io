@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Masters Pool 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root{--green-deep:#0a1f0f;--green-mid:#132b16;--green-light:#1e4024;--gold:#c9a227;--gold-dim:#7a6010;--teal:#7eb4a0;--red:#e07b5a;--text:#e8dfc8;--text-dim:#a09880;}
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -162,6 +163,10 @@
   .admin-link:hover{color:#3a4a3a;}
 
   /* Misc */
+  .xl-bar{max-width:860px;margin:0 auto;padding:10px 16px 0;display:flex;justify-content:flex-end;}
+  .btn-xl{background:transparent;border:1px solid #2a4a2a;color:#5a8a5a;border-radius:6px;padding:7px 14px;font-size:11px;font-weight:600;cursor:pointer;letter-spacing:0.5px;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
+  .btn-xl:hover{border-color:var(--teal);color:var(--teal);background:rgba(126,180,160,0.06);}
+  .btn-xl:disabled{opacity:0.35;cursor:not-allowed;}
   @keyframes spin{to{transform:rotate(360deg);}}
   .spinner{display:inline-block;width:13px;height:13px;border:2px solid #333;border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:5px;}
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--green-light);border:1px solid var(--teal);color:var(--teal);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999;}
@@ -188,6 +193,7 @@
 </div>
 
 <div class="scoring-note"><strong>Best 4 of 6</strong> golfer totals count · Missed cut = 80/round · Lowest total wins</div>
+<div class="xl-bar"><button class="btn-xl" id="btn-xl" onclick="exportExcel()" disabled>📊 Export to Excel</button></div>
 <div class="msg-bar error"   id="error-bar"></div>
 <div class="msg-bar info"    id="info-bar"></div>
 <div class="msg-bar success" id="success-bar"></div>
@@ -475,6 +481,8 @@ async function doRefresh(isManual) {
     }
     scheduleNextRefresh();
     renderAll();
+    var xlBtn = document.getElementById("btn-xl");
+    if (xlBtn) xlBtn.disabled = Object.keys(scores).length === 0;
   } catch(e) {
     var eb = document.getElementById("error-bar");
     eb.textContent = "⚠ Could not fetch scores: " + e.message;
@@ -847,6 +855,102 @@ function changePassword() {
 }
 
 function toggleRow(name) { openRow = openRow === name ? null : name; renderLeaderboard(); }
+
+// ── Export to Excel ───────────────────────────────────────────────────────────
+function exportExcel() {
+  var ranked = getRanked();
+  var has = Object.keys(scores).length > 0;
+  var ts = tourneyMeta.tournament_status;
+  var roundLabel = ts === "completed" ? "Final" : ts === "in_progress" ? "Round " + tourneyMeta.current_round : "Pre-Tournament";
+  var dateStr = tourneyMeta.last_updated ? new Date(tourneyMeta.last_updated).toLocaleString() : new Date().toLocaleString();
+
+  // ── Sheet 1: Leaderboard ──────────────────────────────────────────────────
+  var lb = [];
+  lb.push(["Masters Pool 2026 · Leaderboard", "", "", "", "", "", "", ""]);
+  lb.push([roundLabel + " · " + dateStr, "", "", "", "", "", "", ""]);
+  lb.push([]);
+  lb.push(["Rank", "Name", "Best 4 Total", "T1 Golfer", "T1 Score", "T2 Golfer", "T2 Score", "T3 Golfer", "T3 Score", "T4 Golfer", "T4 Score", "T5 Golfer", "T5 Score", "T6 Golfer", "T6 Score"]);
+
+  for (var i = 0; i < ranked.length; i++) {
+    var p = ranked[i];
+    var row = [p.rank, p.name, p.total !== null ? p.total : "—"];
+    for (var ti = 0; ti < 6; ti++) {
+      var g = p.picks[ti] || "";
+      var t = g ? golferTotal(g, scores) : null;
+      var mc = g && scores[g] && scores[g].made_cut === false;
+      var scoreStr = t !== null ? t : (has ? "—" : "");
+      if (mc) scoreStr = scoreStr + " (MC)";
+      row.push(g);
+      row.push(scoreStr);
+    }
+    lb.push(row);
+  }
+
+  // ── Sheet 2: Picks Detail ─────────────────────────────────────────────────
+  // One block per participant: header row then 6 golfer rows + totals row
+  var detail = [];
+  detail.push(["Masters Pool 2026 · Picks Detail", "", "", "", "", "", ""]);
+  detail.push([roundLabel + " · " + dateStr, "", "", "", "", "", ""]);
+
+  for (var pi = 0; pi < ranked.length; pi++) {
+    var p2 = ranked[pi];
+    detail.push([]);
+    // Participant header
+    detail.push([p2.rank + "  " + p2.name, "", "", "", "", "", ""]);
+    detail.push(["Tier", "Golfer", "Position", "R1", "R2", "R3", "R4", "Total", "Counts?"]);
+
+    var golferTotals = [];
+    for (var ti2 = 0; ti2 < 6; ti2++) {
+      var g2 = p2.picks[ti2] || "";
+      var sc = g2 ? scores[g2] : null;
+      var mc2 = sc && sc.made_cut === false;
+      var r1 = sc ? sc.r1 : null;
+      var r2 = sc ? sc.r2 : null;
+      var r3 = mc2 ? 80 : (sc ? sc.r3 : null);
+      var r4 = mc2 ? 80 : (sc ? sc.r4 : null);
+      var tot2 = g2 ? golferTotal(g2, scores) : null;
+      var espnPos = sc ? (sc.espnPos || "") : "";
+      var inBest4 = p2.used.indexOf(g2) !== -1;
+      var isDrop  = p2.dropped.indexOf(g2) !== -1;
+      var countsStr = !g2 ? "" : inBest4 ? "✓ Count" : isDrop ? "✗ Drop" : "";
+      golferTotals.push(tot2);
+      detail.push([
+        "Tier " + (ti2+1),
+        g2 + (mc2 ? " (MC)" : ""),
+        espnPos,
+        r1 !== null ? r1 : "",
+        r2 !== null ? r2 : "",
+        r3 !== null ? r3 : "",
+        r4 !== null ? r4 : "",
+        tot2 !== null ? tot2 : "",
+        countsStr
+      ]);
+    }
+    // Best 4 totals row
+    detail.push(["", "", "", "", "", "", "", "Best 4 Total:", p2.total !== null ? p2.total : "—"]);
+  }
+
+  // ── Build workbook ────────────────────────────────────────────────────────
+  var wb = XLSX.utils.book_new();
+
+  var wsLb = XLSX.utils.aoa_to_sheet(lb);
+  // Column widths for leaderboard
+  wsLb["!cols"] = [
+    {wch:8},{wch:16},{wch:12},
+    {wch:22},{wch:10},{wch:22},{wch:10},{wch:22},{wch:10},
+    {wch:22},{wch:10},{wch:22},{wch:10},{wch:22},{wch:10}
+  ];
+  XLSX.utils.book_append_sheet(wb, wsLb, "Leaderboard");
+
+  var wsDetail = XLSX.utils.aoa_to_sheet(detail);
+  wsDetail["!cols"] = [{wch:10},{wch:24},{wch:10},{wch:6},{wch:6},{wch:6},{wch:6},{wch:8},{wch:10}];
+  XLSX.utils.book_append_sheet(wb, wsDetail, "Picks Detail");
+
+  // Download
+  var filename = "MastersPool2026_" + roundLabel.replace(/\s/g,"") + ".xlsx";
+  XLSX.writeFile(wb, filename);
+  showToast("✓ Excel file downloaded");
+}
 
 // ── Tabs ─────────────────────────────────────────────────────────────────────
 function switchTab(tab) {
