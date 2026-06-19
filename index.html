@@ -106,7 +106,7 @@
   .btn-add:hover{background:var(--blue);color:#000;}
   .editor-note{font-size:11px;color:#4a6a8a;margin-bottom:16px;padding:10px 14px;background:rgba(74,158,202,0.05);border:1px solid rgba(74,158,202,0.1);border-radius:8px;line-height:1.7;}
   .editor-note strong{color:var(--blue);}
-  .pcard{background:rgba(255,255,255,0.02);border:1px solid #162c4e;border-radius:10px;margin-bottom:12px;overflow:hidden;}
+  .pcard{background:rgba(255,255,255,0.02);border:1px solid #162c4e;border-radius:10px;margin-bottom:12px;}
   .pcard-header{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;border-bottom:1px solid transparent;transition:background 0.15s;}
   .pcard-header:hover{background:rgba(255,255,255,0.02);}
   .pcard-header.open{border-bottom-color:#162c4e;}
@@ -126,6 +126,14 @@
   .tier-row{display:flex;align-items:center;gap:10px;}
   .tier-lbl{display:flex;align-items:center;gap:6px;min-width:68px;font-size:12px;font-weight:600;}
   .tier-dot-sm{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .autocomplete-wrap{position:relative;flex:1;}
+  .autocomplete-results{position:absolute;top:calc(100% + 2px);left:0;right:0;background:#101e3a;border:1px solid #2a4268;border-radius:7px;max-height:220px;overflow-y:auto;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,0.5);display:none;}
+  .autocomplete-results.open{display:block;}
+  .ac-item{padding:9px 13px;font-size:13px;cursor:pointer;border-bottom:1px solid #162c4e;display:flex;justify-content:space-between;align-items:center;}
+  .ac-item:last-child{border-bottom:none;}
+  .ac-item:hover, .ac-item.highlighted{background:rgba(255,255,255,0.08);}
+  .ac-item-rank{font-size:10px;color:#4a6a8a;flex-shrink:0;margin-left:10px;}
+  .ac-no-results{padding:10px 13px;font-size:12px;color:#3a5278;font-style:italic;}
   .form-actions{display:flex;gap:8px;justify-content:flex-end;}
   .btn-save-p{background:var(--gold);color:#000;border:none;border-radius:6px;padding:9px 20px;font-weight:700;font-size:13px;cursor:pointer;transition:opacity 0.2s;}
   .btn-save-p:hover{opacity:0.85;}
@@ -245,6 +253,8 @@ var TIER_NAMES       = ["Tier 1 (DG 1-10)","Tier 2 (DG 11-20)","Tier 3 (DG 21-30
 var MC_SCORE         = 80;
 
 // ── Default Pool Data ─────────────────────────────────────────────────────────
+var FIELD_PLAYERS = ["Scottie Scheffler", "Rory McIlroy", "Jon Rahm", "Cameron Young", "Matt Fitzpatrick", "Tommy Fleetwood", "Xander Schauffele", "Ludvig Aberg", "Russell Henley", "Si Woo Kim", "Patrick Cantlay", "Sam Burns", "J.J. Spaun", "Maverick McNealy", "Collin Morikawa", "Chris Gotterup", "Harris English", "Wyndham Clark", "Bryson DeChambeau", "Adam Scott", "Justin Thomas", "Jake Knapp", "Viktor Hovland", "Ben Griffin", "Kurt Kitayama", "Shane Lowry", "Ryan Gerard", "Alex Noren", "Robert MacIntyre", "Min Woo Lee", "Justin Rose", "Patrick Reed", "Hideki Matsuyama", "Alex Fitzpatrick", "Alex Smalley", "Kristoffer Reitan", "Tyrrell Hatton", "Bud Cauley", "Keegan Bradley", "Jordan Spieth", "Nicolai Hojgaard", "David Puig", "Aaron Rai", "Akshay Bhatia", "Jacob Bridgeman", "J.T. Poston", "Jackson Koivun", "Gary Woodland", "Harry Hall", "Rickie Fowler", "Sepp Straka", "Ryan Fox", "Joaquin Niemann", "Keith Mitchell", "Nick Taylor", "Brooks Koepka", "Jason Day", "Matt McCarty", "Brian Harman", "Michael Kim", "Jayden Schaper", "Andrew Putnam", "Daniel Berger", "Dustin Johnson", "Sahith Theegala", "Pierceson Coody", "Sudarshan Yellamaraju", "Davis Thompson", "Andrew Novak", "Cameron Smith", "Corey Conners", "Sam Stevens", "Tom Kim", "Lucas Herbert", "Max Greyserman", "Sungjae Im", "Ryo Hisatsune", "Max McGreevy", "Michael Brennan", "Chris Kirk", "Nico Echavarria", "William Mouw", "Patrick Rodgers", "Matti Schmid", "Cooper Dossey", "Johnny Keefer", "Carlos Ortiz", "Billy Horschel", "Ben James", "Ben Kohles", "Adrien Dumont De Chassart", "Jackson Suber", "Ugo Coussaud", "John Parry", "Preston Stout", "Emiliano Grillo", "Hennie Du Plessis", "Nathan Kimsey", "Zac Blair", "Kevin Roy", "Adrien Saddier", "Matthew Jordan", "Laurie Canter", "Caleb Surratt", "Chandler Phillips", "Neal Shipley", "Dylan Wu", "Cole Hammer", "Ben Silverman", "Miles Russell", "Peter Uihlein", "James Nicholas", "Jimmy Stanger", "Taihei Sato", "Taylor Montgomery", "Niklas Norgaard", "Nick Hardy", "Harry Higgs", "Carl Yuan", "Graeme McDowell", "Marcelo Rozo", "Alejandro Tosti", "Padraig Harrington", "Ryder Cowan", "Jackson Van Paris", "Angel Hidalgo Portillo", "Brandon Holtz", "Brandon Wu", "Bryan Lee", "Chase Kyes", "Eric Lee", "Ethan Fang", "Filippo Celli", "Giuseppe Puebla", "Greyson Leach", "Gunnlaugur Arni Sveinsson", "Hamilton Coleman", "J.B. Holmes", "Jack Schoenberger", "Jackson Herrington", "Jackson Ormond", "Jake Peacock", "Jake Sollon", "Kaito Onishi", "Logan Reilly", "Manav Shah", "Marek Fleming", "Mason Howell", "Mateo Pulcini", "Matt Robles", "Robbie Higgins", "Rocco Paolo Repetto Taylor", "Ryuichi Oiwa", "Spencer Tibbits", "T.K. Kim", "Vaughn Harber"];
+
 var DEFAULT_POOL = [
   {name:"Ryan",   picks:["","","","","",""]},
   {name:"Joey",   picks:["","","","","",""]},
@@ -683,9 +693,59 @@ function renderEditor() {
 function renderPCard(p,idx) {
   var isOpen=editOpen[idx], filled=p.picks.filter(function(x){return !!x;}).length, tiers="";
   for(var ti=0;ti<6;ti++){
-    tiers+='<div class="tier-row"><div class="tier-lbl"><div class="tier-dot-sm" style="background:'+TIER_COLORS[ti]+'"></div>T'+(ti+1)+'</div><input class="fi" id="pick-'+idx+'-'+ti+'" value="'+(p.picks[ti]||"").replace(/"/g,"&quot;")+'" placeholder="'+TIER_NAMES[ti]+'"/></div>';
+    tiers+='<div class="tier-row"><div class="tier-lbl"><div class="tier-dot-sm" style="background:'+TIER_COLORS[ti]+'"></div>T'+(ti+1)+'</div>'
+      +'<div class="autocomplete-wrap">'
+      +'<input class="fi" id="pick-'+idx+'-'+ti+'" autocomplete="off" value="'+(p.picks[ti]||"").replace(/"/g,"&quot;")+'" placeholder="'+TIER_NAMES[ti]+'" '
+      +'oninput="onPickInput('+idx+','+ti+')" onfocus="onPickInput('+idx+','+ti+')" onblur="onPickBlur('+idx+','+ti+')"/>'
+      +'<div class="autocomplete-results" id="ac-'+idx+'-'+ti+'"></div>'
+      +'</div></div>';
   }
   return '<div class="pcard" id="pcard-'+idx+'"><div class="pcard-header'+(isOpen?" open":"")+'" onclick="toggleEdit('+idx+')"><div class="pcard-num">'+(idx+1)+'</div><div class="pcard-names"><div class="pcard-name">'+p.name+'</div></div><div class="pcard-summary">'+filled+'/6 picks</div><button class="btn-del" onclick="delParticipant(event,'+idx+')">✕</button><div class="pcard-chevron">'+(isOpen?"▲":"▼")+'</div></div><div class="pcard-form'+(isOpen?" open":"")+'"><div class="form-group"><label class="form-label">Name</label><input class="fi" id="pname-'+idx+'" value="'+p.name.replace(/"/g,"&quot;")+'"/></div><div class="form-group"><label class="form-label">Golfer Picks — one per tier</label></div><div class="tier-grid">'+tiers+'</div><div class="form-actions"><button class="btn-cancel-p" onclick="cancelEdit('+idx+')">Cancel</button><button class="btn-save-p" onclick="saveParticipant('+idx+')">Save Participant</button></div></div></div>';
+}
+
+// ── Autocomplete for golfer search ───────────────────────────────────────────
+function onPickInput(idx, ti) {
+  var input = document.getElementById("pick-"+idx+"-"+ti);
+  var resultsEl = document.getElementById("ac-"+idx+"-"+ti);
+  var query = input.value.trim().toLowerCase();
+
+  if (!query) { resultsEl.classList.remove("open"); resultsEl.innerHTML=""; return; }
+
+  var matches = FIELD_PLAYERS.filter(function(name) {
+    return name.toLowerCase().indexOf(query) !== -1;
+  }).slice(0, 8);
+
+  if (!matches.length) {
+    resultsEl.innerHTML = '<div class="ac-no-results">No matching players — you can still type a custom name</div>';
+    resultsEl.classList.add("open");
+    return;
+  }
+
+  var html = "";
+  for (var i=0; i<matches.length; i++) {
+    var rank = FIELD_PLAYERS.indexOf(matches[i]) + 1;
+    var safe = matches[i].replace(/'/g,"\\'");
+    html += '<div class="ac-item" onmousedown="selectPick(event,'+idx+','+ti+',\''+safe+'\')"><span>'+matches[i]+'</span><span class="ac-item-rank">DG #'+rank+'</span></div>';
+  }
+  resultsEl.innerHTML = html;
+  resultsEl.classList.add("open");
+}
+
+function selectPick(e, idx, ti, name) {
+  e.preventDefault();
+  var input = document.getElementById("pick-"+idx+"-"+ti);
+  input.value = name;
+  var resultsEl = document.getElementById("ac-"+idx+"-"+ti);
+  resultsEl.classList.remove("open");
+  resultsEl.innerHTML = "";
+}
+
+function onPickBlur(idx, ti) {
+  // Delay so a click on a dropdown item (onmousedown) fires first
+  setTimeout(function() {
+    var resultsEl = document.getElementById("ac-"+idx+"-"+ti);
+    if (resultsEl) { resultsEl.classList.remove("open"); resultsEl.innerHTML=""; }
+  }, 150);
 }
 
 function toggleEdit(idx){editOpen[idx]=!editOpen[idx];renderEditor();}
