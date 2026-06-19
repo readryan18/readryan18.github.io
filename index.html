@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Masters Pool 2026</title>
+<title>U.S. Open Pool 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-  :root{--green-deep:#0a1f0f;--green-mid:#132b16;--green-light:#1e4024;--gold:#c9a227;--gold-dim:#7a6010;--teal:#7eb4a0;--red:#e07b5a;--text:#e8dfc8;--text-dim:#a09880;}
+  :root{--navy-deep:#0f2040;--navy-mid:#162c4e;--navy-light:#1e3860;--gold:#ffffff;--gold-dim:#999999;--blue:#4a9eca;--red:#cc4444;--text:#e8f0f8;--text-dim:#8098b8;}
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--green-deep);color:var(--text);font-family:'Source Sans 3',sans-serif;min-height:100vh;}
+  body{background:var(--navy-deep);color:var(--text);font-family:'Source Sans 3',sans-serif;min-height:100vh;}
 
   /* Header */
-  .header{background:linear-gradient(180deg,#000 0%,var(--green-deep) 100%);border-bottom:2px solid var(--gold);padding:20px 24px 16px;position:sticky;top:0;z-index:100;}
+  .header{background:linear-gradient(180deg,#000 0%,var(--navy-deep) 100%);border-bottom:2px solid var(--gold);padding:20px 24px 16px;position:sticky;top:0;z-index:100;}
   .header-inner{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:14px;}
   .header-title{flex:1;}
   .header-eyebrow{font-size:10px;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:2px;}
   .header-main{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:#fff;}
-  .header-sub{font-size:11px;color:var(--teal);font-style:italic;margin-top:2px;}
+  .header-sub{font-size:11px;color:var(--blue);font-style:italic;margin-top:2px;}
   .header-meta{font-size:10px;color:#444;margin-top:1px;}
-  .countdown{font-size:10px;color:#3a5a3a;margin-top:1px;}
-  .live-badge{display:flex;align-items:center;gap:6px;background:rgba(201,162,39,0.1);border:1px solid rgba(201,162,39,0.25);border-radius:20px;padding:6px 14px;font-size:11px;color:var(--gold);font-weight:600;white-space:nowrap;}
+  .countdown{font-size:10px;color:#3a5278;margin-top:1px;}
+  .live-badge{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:6px 14px;font-size:11px;color:var(--gold);font-weight:600;white-space:nowrap;}
   .live-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
   .live-dot.pulsing{animation:pulse 1.8s ease-in-out infinite;}
@@ -28,99 +28,99 @@
   .btn-refresh:hover{opacity:0.85;}
   .btn-refresh:disabled{background:#222;color:#555;cursor:not-allowed;}
   .btn-refresh.visible{display:block;}
-  .admin-badge{background:rgba(224,123,90,0.2);border:1px solid rgba(224,123,90,0.35);color:var(--red);font-size:9px;font-weight:700;letter-spacing:2px;padding:3px 8px;border-radius:4px;text-transform:uppercase;font-family:'Source Sans 3',sans-serif;display:none;}
+  .admin-badge{background:rgba(204,68,68,0.2);border:1px solid rgba(204,68,68,0.35);color:var(--red);font-size:9px;font-weight:700;letter-spacing:2px;padding:3px 8px;border-radius:4px;text-transform:uppercase;font-family:'Source Sans 3',sans-serif;display:none;}
   .admin-badge.visible{display:inline-block;}
 
   /* Bars */
-  .scoring-note{background:rgba(201,162,39,0.06);border-bottom:1px solid rgba(201,162,39,0.12);padding:7px 24px;font-size:11px;color:#a89060;text-align:center;}
+  .scoring-note{background:rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.12);padding:7px 24px;font-size:11px;color:#a0b4cc;text-align:center;}
   .scoring-note strong{color:var(--gold);}
   .msg-bar{padding:9px 24px;font-size:12px;text-align:center;display:none;}
-  .msg-bar.error{background:#2a0a0a;color:var(--red);}
-  .msg-bar.info{background:rgba(126,180,160,0.08);color:var(--teal);border-bottom:1px solid rgba(126,180,160,0.15);}
-  .msg-bar.success{background:rgba(126,180,160,0.12);color:var(--teal);border-bottom:1px solid rgba(126,180,160,0.2);}
+  .msg-bar.error{background:#2a0808;color:var(--red);}
+  .msg-bar.info{background:rgba(74,158,202,0.08);color:var(--blue);border-bottom:1px solid rgba(74,158,202,0.15);}
+  .msg-bar.success{background:rgba(74,158,202,0.12);color:var(--blue);border-bottom:1px solid rgba(74,158,202,0.2);}
 
   /* Tabs */
-  .tabs{display:flex;background:#060f08;border-bottom:1px solid #1a2a1a;}
-  .tab{flex:1;padding:13px;border:none;background:transparent;color:var(--teal);font-family:'Source Sans 3',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;}
-  .tab.active{background:var(--green-mid);color:var(--gold);border-bottom-color:var(--gold);}
+  .tabs{display:flex;background:#0a1830;border-bottom:1px solid #162c4e;}
+  .tab{flex:1;padding:13px;border:none;background:transparent;color:var(--blue);font-family:'Source Sans 3',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;}
+  .tab.active{background:var(--navy-mid);color:var(--gold);border-bottom-color:var(--gold);}
   .tab.admin-tab{display:none;}
   .tab.admin-tab.visible{display:block;}
   .content{max-width:860px;margin:0 auto;padding:16px 16px 60px;}
-  .placeholder{text-align:center;padding:70px 20px;color:#3a5a3a;font-style:italic;font-size:15px;line-height:2.2;}
+  .placeholder{text-align:center;padding:70px 20px;color:#3a5278;font-style:italic;font-size:15px;line-height:2.2;}
 
   /* Leaderboard */
   .lb-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:8px;cursor:pointer;margin-bottom:5px;border:1px solid transparent;transition:background 0.15s;}
   .lb-row:nth-child(odd){background:rgba(255,255,255,0.02);}
-  .lb-row:hover{background:rgba(201,162,39,0.05);}
-  .lb-row.open{background:rgba(201,162,39,0.07);border-color:rgba(201,162,39,0.22);border-radius:8px 8px 0 0;}
-  .lb-row.paid-1{border-left:3px solid rgba(201,162,39,0.6)!important;}
+  .lb-row:hover{background:rgba(255,255,255,0.05);}
+  .lb-row.open{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.22);border-radius:8px 8px 0 0;}
+  .lb-row.paid-1{border-left:3px solid rgba(255,255,255,0.6)!important;}
   .lb-row.paid-2{border-left:3px solid rgba(200,200,200,0.4)!important;}
   .lb-row.paid-3{border-left:3px solid rgba(205,127,50,0.45)!important;}
-  .lb-row.paid-4{border-left:3px solid rgba(126,180,160,0.35)!important;}
-  .lb-row.paid-5{border-left:3px solid rgba(138,170,122,0.28)!important;}
+  .lb-row.paid-4{border-left:3px solid rgba(74,158,202,0.4)!important;}
+  .lb-row.paid-5{border-left:3px solid rgba(138,170,122,0.3)!important;}
   .lb-rank{width:38px;text-align:center;font-weight:700;border-radius:6px;padding:3px 0;}
-  .lb-rank.gold{color:var(--gold);font-size:15px;font-weight:900;background:rgba(201,162,39,0.15);border:1px solid rgba(201,162,39,0.35);}
+  .lb-rank.gold{color:var(--gold);font-size:15px;font-weight:900;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);}
   .lb-rank.silver{color:#ccc;font-size:15px;font-weight:900;background:rgba(200,200,200,0.1);border:1px solid rgba(200,200,200,0.25);}
   .lb-rank.bronze{color:#cd7f32;font-size:15px;font-weight:900;background:rgba(205,127,50,0.12);border:1px solid rgba(205,127,50,0.3);}
-  .lb-rank.payout4{color:var(--teal);font-size:14px;font-weight:700;background:rgba(126,180,160,0.08);border:1px solid rgba(126,180,160,0.2);}
+  .lb-rank.payout4{color:var(--blue);font-size:14px;font-weight:700;background:rgba(74,158,202,0.1);border:1px solid rgba(74,158,202,0.25);}
   .lb-rank.payout5{color:#8aaa7a;font-size:14px;font-weight:700;background:rgba(138,170,122,0.07);border:1px solid rgba(138,170,122,0.18);}
   .lb-rank.other{color:#555;font-size:14px;border:none;background:none;}
   .lb-name{flex:1;}.lb-name-main{font-weight:600;font-size:15px;}
   .lb-dots{display:flex;gap:3px;}.lb-dot{width:8px;height:8px;border-radius:50%;}
   .lb-total{font-weight:700;font-size:20px;min-width:54px;text-align:right;}.lb-total.empty{color:#333;}
   .lb-chevron{font-size:10px;color:#444;}
-  .lb-detail{background:rgba(0,0,0,0.45);border:1px solid rgba(201,162,39,0.18);border-top:none;border-radius:0 0 8px 8px;padding:14px 16px;margin-bottom:5px;display:none;}
+  .lb-detail{background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.18);border-top:none;border-radius:0 0 8px 8px;padding:14px 16px;margin-bottom:5px;display:none;}
   .lb-detail.open{display:block;}
-  .detail-header{font-size:9px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
-  .detail-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #111a11;font-size:13px;}
+  .detail-header{font-size:9px;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+  .detail-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #0d1a2a;font-size:13px;}
   .detail-row.dropped{opacity:0.38;}
   .tier-badge{border-radius:3px;padding:1px 6px;font-size:9px;font-weight:700;min-width:40px;text-align:center;color:#000;}
   .detail-golfer{flex:1;}.mc-tag{font-size:9px;color:var(--red);margin-left:4px;}
-  .espn-pos{font-size:9px;color:#5a7a5a;margin-left:5px;background:rgba(126,180,160,0.1);padding:1px 5px;border-radius:3px;}
-  .detail-rounds{display:flex;gap:6px;font-size:11px;color:var(--teal);}
+  .espn-pos{font-size:9px;color:#4a7090;margin-left:5px;background:rgba(74,158,202,0.1);padding:1px 5px;border-radius:3px;}
+  .detail-rounds{display:flex;gap:6px;font-size:11px;color:var(--blue);}
   .detail-rounds .mc-round{color:var(--red);}.detail-rounds .empty-round{opacity:0.2;}
   .detail-score{font-weight:700;font-size:14px;min-width:34px;text-align:right;}
   .detail-score.sc-gold{color:var(--gold);}.detail-score.sc-mc{color:var(--red);}.detail-score.sc-drop{color:#444;}
   .detail-badge{font-size:9px;min-width:38px;text-align:center;}
-  .detail-badge.badge-count{color:var(--teal);}.detail-badge.badge-drop{color:#5a2a2a;}
+  .detail-badge.badge-count{color:var(--blue);}.detail-badge.badge-drop{color:#5a2a2a;}
   .detail-footer{margin-top:10px;text-align:right;font-size:15px;font-weight:700;color:var(--gold);}
 
   /* All Picks */
   .picks-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));}
-  .pick-card{background:rgba(255,255,255,0.02);border:1px solid #1e2e1e;border-radius:10px;padding:16px;}
+  .pick-card{background:rgba(255,255,255,0.02);border:1px solid #162c4e;border-radius:10px;padding:16px;}
   .pick-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
   .pick-card-name{font-weight:700;font-size:15px;}
-  .pick-card-rank{background:rgba(201,162,39,0.1);border-radius:6px;padding:4px 10px;text-align:center;}
+  .pick-card-rank{background:rgba(255,255,255,0.1);border-radius:6px;padding:4px 10px;text-align:center;}
   .pick-card-rank-label{font-size:9px;color:var(--gold);letter-spacing:1px;}.pick-card-rank-num{font-weight:700;font-size:18px;line-height:1;}
-  .pick-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #0d160e;font-size:12px;}
-  .pick-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}.pick-golfer{flex:1;color:#c8c0b0;}
-  .pick-score{font-weight:700;}.pick-score.ps-count{color:var(--gold);}.pick-score.ps-drop{color:#4a2a2a;}.pick-score.ps-normal{color:#555;}
-  .pick-chk{font-size:9px;}.pick-chk.chk-y{color:#3a6a3a;}.pick-chk.chk-n{color:#4a1a1a;}
-  .pick-card-footer{margin-top:10px;padding-top:8px;border-top:1px solid #1a2a1a;display:flex;justify-content:space-between;align-items:center;}
-  .pick-card-label{font-size:10px;color:#3a5a3a;font-style:italic;}.pick-card-total{font-weight:700;font-size:16px;}.pick-card-total.empty{color:#333;}
+  .pick-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #122038;font-size:12px;}
+  .pick-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}.pick-golfer{flex:1;color:#a0b8d0;}
+  .pick-score{font-weight:700;}.pick-score.ps-count{color:var(--gold);}.pick-score.ps-drop{color:#3a1a1a;}.pick-score.ps-normal{color:#555;}
+  .pick-chk{font-size:9px;}.pick-chk.chk-y{color:#2a5a7a;}.pick-chk.chk-n{color:#4a1a1a;}
+  .pick-card-footer{margin-top:10px;padding-top:8px;border-top:1px solid #162c4e;display:flex;justify-content:space-between;align-items:center;}
+  .pick-card-label{font-size:10px;color:#3a5278;font-style:italic;}.pick-card-total{font-weight:700;font-size:16px;}.pick-card-total.empty{color:#333;}
 
   /* Editor */
   .editor-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap;}
   .editor-toolbar h2{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold);}
-  .btn-add{background:var(--green-light);border:1px solid var(--teal);color:var(--teal);border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;}
-  .btn-add:hover{background:var(--teal);color:#000;}
-  .editor-note{font-size:11px;color:#4a6a4a;margin-bottom:16px;padding:10px 14px;background:rgba(126,180,160,0.05);border:1px solid rgba(126,180,160,0.1);border-radius:8px;line-height:1.7;}
-  .editor-note strong{color:var(--teal);}
-  .pcard{background:rgba(255,255,255,0.02);border:1px solid #1e2e1e;border-radius:10px;margin-bottom:12px;overflow:hidden;}
+  .btn-add{background:var(--navy-light);border:1px solid var(--blue);color:var(--blue);border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+  .btn-add:hover{background:var(--blue);color:#000;}
+  .editor-note{font-size:11px;color:#4a6a8a;margin-bottom:16px;padding:10px 14px;background:rgba(74,158,202,0.05);border:1px solid rgba(74,158,202,0.1);border-radius:8px;line-height:1.7;}
+  .editor-note strong{color:var(--blue);}
+  .pcard{background:rgba(255,255,255,0.02);border:1px solid #162c4e;border-radius:10px;margin-bottom:12px;overflow:hidden;}
   .pcard-header{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;border-bottom:1px solid transparent;transition:background 0.15s;}
   .pcard-header:hover{background:rgba(255,255,255,0.02);}
-  .pcard-header.open{border-bottom-color:#1a2a1a;}
-  .pcard-num{width:26px;height:26px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold);flex-shrink:0;}
+  .pcard-header.open{border-bottom-color:#162c4e;}
+  .pcard-num{width:26px;height:26px;border-radius:50%;background:var(--navy-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold);flex-shrink:0;}
   .pcard-names{flex:1;}.pcard-name{font-weight:600;font-size:15px;}
-  .pcard-summary{font-size:11px;color:#4a6a4a;}
-  .btn-del{background:transparent;border:none;color:#5a2a2a;font-size:18px;cursor:pointer;padding:4px 8px;border-radius:4px;transition:all 0.15s;}
+  .pcard-summary{font-size:11px;color:#4a6a8a;}
+  .btn-del{background:transparent;border:none;color:#5a2020;font-size:18px;cursor:pointer;padding:4px 8px;border-radius:4px;transition:all 0.15s;}
   .btn-del:hover{background:#3a1010;color:var(--red);}
   .pcard-chevron{font-size:10px;color:#444;padding:4px;}
   .pcard-form{padding:16px;display:none;}
   .pcard-form.open{display:block;}
   .form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
   .form-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);}
-  .fi{width:100%;padding:10px 13px;background:rgba(0,0,0,0.4);border:1px solid #2a3a2a;border-radius:7px;color:var(--text);font-family:'Source Sans 3',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;}
+  .fi{width:100%;padding:10px 13px;background:rgba(0,0,0,0.4);border:1px solid #1e3660;border-radius:7px;color:var(--text);font-family:'Source Sans 3',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;}
   .fi:focus{border-color:var(--gold);}
   .tier-grid{display:grid;gap:8px;margin-bottom:14px;}
   .tier-row{display:flex;align-items:center;gap:10px;}
@@ -129,26 +129,26 @@
   .form-actions{display:flex;gap:8px;justify-content:flex-end;}
   .btn-save-p{background:var(--gold);color:#000;border:none;border-radius:6px;padding:9px 20px;font-weight:700;font-size:13px;cursor:pointer;transition:opacity 0.2s;}
   .btn-save-p:hover{opacity:0.85;}
-  .btn-cancel-p{background:transparent;border:1px solid #2a3a2a;color:var(--text-dim);border-radius:6px;padding:9px 16px;font-size:13px;cursor:pointer;transition:all 0.2s;}
-  .btn-cancel-p:hover{border-color:#4a5a4a;color:var(--text);}
-  .pwd-section{background:rgba(224,123,90,0.05);border:1px solid rgba(224,123,90,0.15);border-radius:10px;padding:16px;margin-top:24px;}
+  .btn-cancel-p{background:transparent;border:1px solid #1e3660;color:var(--text-dim);border-radius:6px;padding:9px 16px;font-size:13px;cursor:pointer;transition:all 0.2s;}
+  .btn-cancel-p:hover{border-color:#4a6a8a;color:var(--text);}
+  .pwd-section{background:rgba(204,68,68,0.05);border:1px solid rgba(204,68,68,0.15);border-radius:10px;padding:16px;margin-top:24px;}
   .pwd-section h3{font-size:13px;color:var(--red);font-weight:600;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
   .pwd-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;}
-  .btn-change-pwd{background:rgba(224,123,90,0.2);border:1px solid rgba(224,123,90,0.3);color:var(--red);border-radius:6px;padding:10px 16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.2s;}
-  .btn-change-pwd:hover{background:rgba(224,123,90,0.35);}
-  .export-section{background:rgba(201,162,39,0.05);border:1px solid rgba(201,162,39,0.2);border-radius:10px;padding:16px 18px;margin-top:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .btn-change-pwd{background:rgba(204,68,68,0.2);border:1px solid rgba(204,68,68,0.3);color:var(--red);border-radius:6px;padding:10px 16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.2s;}
+  .btn-change-pwd:hover{background:rgba(204,68,68,0.35);}
+  .export-section{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:16px 18px;margin-top:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
   .export-section-text{flex:1;}
   .export-section-title{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:3px;}
-  .export-section-desc{font-size:11px;color:#6a7a5a;line-height:1.6;}
+  .export-section-desc{font-size:11px;color:#5a6a3a;line-height:1.6;}
   .btn-export{background:var(--gold);color:#000;border:none;border-radius:8px;padding:11px 20px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;transition:opacity 0.2s;flex-shrink:0;}
   .btn-export:hover{opacity:0.85;}
-  .admin-logout{background:transparent;border:1px solid #2a3a2a;color:var(--text-dim);border-radius:6px;padding:8px 14px;font-size:12px;cursor:pointer;margin-top:16px;float:right;transition:all 0.2s;}
+  .admin-logout{background:transparent;border:1px solid #1e3660;color:var(--text-dim);border-radius:6px;padding:8px 14px;font-size:12px;cursor:pointer;margin-top:16px;float:right;transition:all 0.2s;}
   .admin-logout:hover{border-color:var(--red);color:var(--red);}
 
   /* Login modal */
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);align-items:center;justify-content:center;z-index:500;display:none;}
   .modal-overlay.open{display:flex;}
-  .modal-card{background:#0d1f10;border:1px solid var(--gold-dim);border-radius:16px;padding:40px 36px;max-width:380px;width:90%;text-align:center;}
+  .modal-card{background:#101e3a;border:1px solid var(--gold-dim);border-radius:16px;padding:40px 36px;max-width:380px;width:90%;text-align:center;}
   .modal-card .logo{font-size:40px;margin-bottom:12px;}
   .modal-card h2{font-family:'Playfair Display',serif;font-size:22px;color:#fff;margin-bottom:6px;}
   .modal-card p{color:var(--text-dim);font-size:13px;margin-bottom:20px;}
@@ -157,19 +157,21 @@
   .btn-modal-login:hover{opacity:0.85;}
   .btn-modal-cancel{background:transparent;border:none;color:var(--text-dim);font-size:12px;cursor:pointer;margin-top:14px;text-decoration:underline;}
 
+  /* Excel button */
+  .xl-bar{max-width:860px;margin:0 auto;padding:10px 16px 0;display:flex;justify-content:flex-end;}
+  .btn-xl{background:transparent;border:1px solid #1e4068;color:#4a7a9a;border-radius:6px;padding:7px 14px;font-size:11px;font-weight:600;cursor:pointer;letter-spacing:0.5px;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
+  .btn-xl:hover{border-color:var(--blue);color:var(--blue);background:rgba(74,158,202,0.06);}
+  .btn-xl:disabled{opacity:0.35;cursor:not-allowed;}
+
   /* Footer */
-  .footer{border-top:1px solid #1a2a1a;margin-top:40px;padding:16px 24px;text-align:center;font-size:10px;color:#3a4a3a;line-height:2;}
-  .admin-link{color:#1e2e1e;text-decoration:none;cursor:pointer;font-size:10px;transition:color 0.2s;}
-  .admin-link:hover{color:#3a4a3a;}
+  .footer{border-top:1px solid #162c4e;margin-top:40px;padding:16px 24px;text-align:center;font-size:10px;color:#3a526a;line-height:2;}
+  .admin-link{color:#162c4e;text-decoration:none;cursor:pointer;font-size:10px;transition:color 0.2s;}
+  .admin-link:hover{color:#3a526a;}
 
   /* Misc */
-  .xl-bar{max-width:860px;margin:0 auto;padding:10px 16px 0;display:flex;justify-content:flex-end;}
-  .btn-xl{background:transparent;border:1px solid #2a4a2a;color:#5a8a5a;border-radius:6px;padding:7px 14px;font-size:11px;font-weight:600;cursor:pointer;letter-spacing:0.5px;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
-  .btn-xl:hover{border-color:var(--teal);color:var(--teal);background:rgba(126,180,160,0.06);}
-  .btn-xl:disabled{opacity:0.35;cursor:not-allowed;}
   @keyframes spin{to{transform:rotate(360deg);}}
   .spinner{display:inline-block;width:13px;height:13px;border:2px solid #333;border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:5px;}
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--green-light);border:1px solid var(--teal);color:var(--teal);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999;}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy-light);border:1px solid var(--blue);color:var(--blue);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999;}
   .toast.show{opacity:1;}
 </style>
 </head>
@@ -178,8 +180,8 @@
 <div class="header">
   <div class="header-inner">
     <div class="header-title">
-      <div class="header-eyebrow">Augusta National · 2026</div>
-      <div class="header-main">⛳ Masters Pool <span class="admin-badge" id="admin-badge">Admin</span></div>
+      <div class="header-eyebrow">Shinnecock Hills · 2026</div>
+      <div class="header-main">⛳ U.S. Open Pool <span class="admin-badge" id="admin-badge">Admin</span></div>
       <div class="header-sub" id="status-label">Loading scores…</div>
       <div class="header-meta" id="meta-label"></div>
       <div class="countdown" id="countdown-label"></div>
@@ -212,7 +214,7 @@
 
 <div class="footer">
   6 tiers · 1 pick per tier · <strong>Best 4 of 6</strong> scores count · MC = 80/rd<br>
-  Payouts: 1st = 50% · 2nd = 25% · 3rd = 15% · 4th = 7% · 5th = 3% · $5 buy-in · Venmo @Ryan-Readinger<br>
+  Payouts: 1st = 70% · 2nd = 20% · 3rd = 10% · $30 buy-in · Venmo @Ryan-Readinger<br>
   Scores via ESPN · Auto-updates every 60 minutes<br>
   <span class="admin-link" onclick="openLoginModal()">⚙</span>
 </div>
@@ -233,486 +235,44 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ── Config ───────────────────────────────────────────────────────────────────
+// ── Config ────────────────────────────────────────────────────────────────────
 var AUTO_REFRESH_MS  = 60 * 60 * 1000;
-var POOL_KEY         = "masters_pool_participants_v3";
-var PWD_KEY          = "masters_pool_admin_pwd_v3";
-var DEFAULT_PASSWORD = "masters2026";
-var TIER_COLORS      = ["#c9a227","#7eb4a0","#a07cc5","#e07b5a","#5a9ee0","#b5c75a"];
-var TIER_NAMES       = ["Tier 1 (Top 10)","Tier 2 (11-20)","Tier 3 (21-30)","Tier 4 (31-40)","Tier 5 (41-50)","Tier 6 (51+)"];
+var POOL_KEY         = "usopen_pool_participants_v1";
+var PWD_KEY          = "usopen_pool_admin_pwd_v1";
+var DEFAULT_PASSWORD = "usopen2026";
+var TIER_COLORS      = ["#c9a227","#4a9eca","#a07cc5","#e07b5a","#5ab87a","#b5c75a"];
+var TIER_NAMES       = ["Tier 1 (DG 1-10)","Tier 2 (DG 11-20)","Tier 3 (DG 21-30)","Tier 4 (DG 31-40)","Tier 5 (DG 41-51)","Tier 6 (DG 52+)"];
 var MC_SCORE         = 80;
 
-// ── Default Pool Data ────────────────────────────────────────────────────────
+// ── Default Pool Data ─────────────────────────────────────────────────────────
 var DEFAULT_POOL = [
-  {
-    "name": "Ryan",
-    "picks": [
-      "Ludvig Åberg",
-      "Min Woo Lee",
-      "Adam Scott",
-      "Jordan Spieth",
-      "Patrick Reed",
-      "Max Homa"
-    ]
-  },
-  {
-    "name": "Dani",
-    "picks": [
-      "Scottie Scheffler",
-      "Hideki Matsuyama",
-      "Viktor Hovland",
-      "Justin Rose",
-      "Michael Kim",
-      "Gary Woodland"
-    ]
-  },
-  {
-    "name": "Adam",
-    "picks": [
-      "Scottie Scheffler",
-      "Bryson DeChambeau",
-      "Chris Gotterup",
-      "Justin Rose",
-      "Patrick Reed",
-      "Brooks Koepka"
-    ]
-  },
-  {
-    "name": "Will",
-    "picks": [
-      "Scottie Scheffler",
-      "Collin Morikawa",
-      "Viktor Hovland",
-      "Justin Rose",
-      "Daniel Berger",
-      "Sungjae Im"
-    ]
-  },
-  {
-    "name": "Andy P",
-    "picks": [
-      "Scottie Scheffler",
-      "Bryson DeChambeau",
-      "Viktor Hovland",
-      "Corey Conners",
-      "Patrick Reed",
-      "Brooks Koepka"
-    ]
-  },
-  {
-    "name": "Hunter",
-    "picks": [
-      "Scottie Scheffler",
-      "Hideki Matsuyama",
-      "Shane Lowry",
-      "Corey Conners",
-      "Tyrrell Hatton",
-      "Sungjae Im"
-    ]
-  },
-  {
-    "name": "Joey B",
-    "picks": [
-      "Jon Rahm",
-      "Bryson DeChambeau",
-      "Nicolai Højgaard",
-      "Justin Rose",
-      "Patrick Reed",
-      "Brooks Koepka"
-    ]
-  },
-  {
-    "name": "Paige",
-    "picks": [
-      "Scottie Scheffler",
-      "Collin Morikawa",
-      "Viktor Hovland",
-      "Justin Thomas",
-      "Tyrrell Hatton",
-      "Sungjae Im"
-    ]
-  },
-  {
-    "name": "Todd R",
-    "picks": [
-      "Ludvig Åberg",
-      "Min Woo Lee",
-      "Chris Gotterup",
-      "Justin Rose",
-      "Patrick Reed",
-      "Brooks Koepka"
-    ]
-  },
-  {
-    "name": "Hailey",
-    "picks": [
-      "Cameron Young",
-      "Collin Morikawa",
-      "J.J. Spaun",
-      "Corey Conners",
-      "Keegan Bradley",
-      "Brooks Koepka"
-    ]
-  },
-  {
-    "name": "Erik",
-    "picks": [
-      "Xander Schauffele",
-      "Min Woo Lee",
-      "J.J. Spaun",
-      "Corey Conners",
-      "Daniel Berger",
-      "Cameron Smith"
-    ]
-  },
-  {
-    "name": "Gabe",
-    "picks": [
-      "Rory McIlroy",
-      "Bryson DeChambeau",
-      "Viktor Hovland",
-      "Jordan Spieth",
-      "Tyrrell Hatton",
-      "Haotong Li"
-    ]
-  },
-  {
-    "name": "Blake",
-    "picks": [
-      "Rory McIlroy",
-      "Bryson DeChambeau",
-      "Viktor Hovland",
-      "Justin Rose",
-      "Keegan Bradley",
-      "Max Homa"
-    ]
-  },
-  {
-    "name": "Ray",
-    "picks": [
-      "Ludvig Åberg",
-      "Bryson DeChambeau",
-      "Chris Gotterup",
-      "Justin Rose",
-      "Patrick Reed",
-      "Max Homa"
-    ]
-  },
-  {
-    "name": "Joe W",
-    "picks": [
-      "Scottie Scheffler",
-      "Bryson DeChambeau",
-      "Adam Scott",
-      "Justin Rose",
-      "Patrick Reed",
-      "Brooks Koepka"
-    ]
-  },
-  {
-    "name": "Sam",
-    "picks": [
-      "Scottie Scheffler",
-      "Akshay Bhatia",
-      "Nicolai Højgaard",
-      "Justin Rose",
-      "Patrick Reed",
-      "Keegan Bradley"
-    ]
-  },
-  {
-    "name": "Lori",
-    "picks": [
-      "Ludvig Åberg",
-      "Bryson DeChambeau",
-      "Nicolai Højgaard",
-      "Kurt Kitayama",
-      "Keegan Bradley",
-      "Brooks Koepka"
-    ]
-  },
-  {
-    "name": "Maddie",
-    "picks": [
-      "Xander Schauffele",
-      "Maverick McNealy",
-      "Viktor Hovland",
-      "Justin Rose",
-      "Tyrrell Hatton",
-      "Rasmus Neergaard-Petersen"
-    ]
-  },
-  {
-    "name": "Jeff",
-    "picks": [
-      "Xander Schauffele",
-      "Hideki Matsuyama",
-      "Nicolai Højgaard",
-      "Corey Conners",
-      "Patrick Reed",
-      "Cameron Smith"
-    ]
-  },
-  {
-    "name": "Teresa",
-    "picks": [
-      "Scottie Scheffler",
-      "Bryson DeChambeau",
-      "Chris Gotterup",
-      "Justin Rose",
-      "Patrick Reed",
-      "Brooks Koepka"
-    ]
-  },
-  {
-    "name": "Mike",
-    "picks": [
-      "Cameron Young",
-      "Bryson DeChambeau",
-      "J.J. Spaun",
-      "Justin Thomas",
-      "Tyrrell Hatton",
-      "Brian Harman"
-    ]
-  },
-  {
-    "name": "Mr. Petran",
-    "picks": [
-      "Xander Schauffele",
-      "Bryson DeChambeau",
-      "Adam Scott",
-      "Corey Conners",
-      "Tyrrell Hatton",
-      "Aldrich Potgieter"
-    ]
-  },
-  {
-    "name": "Chloe",
-    "picks": [
-      "Rory McIlroy",
-      "Jake Knapp",
-      "Chris Gotterup",
-      "Jason Day",
-      "Casey Jarvis",
-      "Gary Woodland"
-    ]
-  },
-  {
-    "name": "Bryan",
-    "picks": [
-      "Scottie Scheffler",
-      "Min Woo Lee",
-      "Sam Burns",
-      "Justin Thomas",
-      "Rasmus Højgaard",
-      "Gary Woodland"
-    ]
-  },
-  {
-    "name": "Dale",
-    "picks": [
-      "Xander Schauffele",
-      "Bryson DeChambeau",
-      "Shane Lowry",
-      "Justin Rose",
-      "Tyrrell Hatton",
-      "Max Homa"
-    ]
-  },
-  {
-    "name": "Andrew",
-    "picks": [
-      "Xander Schauffele",
-      "Collin Morikawa",
-      "Nicolai Højgaard",
-      "Justin Rose",
-      "Tyrrell Hatton",
-      "Wyndham Clark"
-    ]
-  },
-  {
-    "name": "Madani",
-    "picks": [
-      "Scottie Scheffler",
-      "Collin Morikawa",
-      "Viktor Hovland",
-      "Corey Conners",
-      "Tyrrell Hatton",
-      "Wyndham Clark"
-    ]
-  },
-  {
-    "name": "Alvin",
-    "picks": [
-      "Scottie Scheffler",
-      "Bryson DeChambeau",
-      "Viktor Hovland",
-      "Jordan Spieth",
-      "Patrick Reed",
-      "Brooks Koepka"
-    ]
-  },
-  {
-    "name": "Todd B",
-    "picks": [
-      "Xander Schauffele",
-      "Collin Morikawa",
-      "Shane Lowry",
-      "Jordan Spieth",
-      "Patrick Reed",
-      "Cameron Smith"
-    ]
-  },
-  {
-    "name": "Matt",
-    "picks": [
-      "Ludvig Åberg",
-      "Maverick McNealy",
-      "Viktor Hovland",
-      "Jordan Spieth",
-      "Tyrrell Hatton",
-      "Gary Woodland"
-    ]
-  },
-  {
-    "name": "Callum",
-    "picks": [
-      "Ludvig Åberg",
-      "Akshay Bhatia",
-      "Chris Gotterup",
-      "Sepp Straka",
-      "Patrick Reed",
-      "Marco Penge"
-    ]
-  },
-  {
-    "name": "Sarah",
-    "picks": [
-      "Jon Rahm",
-      "Collin Morikawa",
-      "Shane Lowry",
-      "Nick Taylor",
-      "Keegan Bradley",
-      "Brooks Koepka"
-    ]
-  },
-  {
-    "name": "Eliza",
-    "picks": [
-      "Tommy Fleetwood",
-      "Jake Knapp",
-      "Chris Gotterup",
-      "Ryan Gerard",
-      "Tyrrell Hatton",
-      "Andrew Novak"
-    ]
-  },
-  {
-    "name": "Shelby & Lauren",
-    "picks": [
-      "Ludvig Åberg",
-      "Bryson DeChambeau",
-      "Adam Scott",
-      "Justin Rose",
-      "Daniel Berger",
-      "Cameron Smith"
-    ]
-  },
-  {
-    "name": "Taylor",
-    "picks": [
-      "Jon Rahm",
-      "Si Woo Kim",
-      "Chris Gotterup",
-      "Justin Rose",
-      "Patrick Reed",
-      "Gary Woodland"
-    ]
-  },
-  {
-    "name": "Megan",
-    "picks": [
-      "Scottie Scheffler",
-      "Bryson DeChambeau",
-      "Viktor Hovland",
-      "Justin Thomas",
-      "Tyrrell Hatton",
-      "Cameron Smith"
-    ]
-  },
-  {
-    "name": "Chad",
-    "picks": [
-      "Tommy Fleetwood",
-      "Bryson DeChambeau",
-      "J.J. Spaun",
-      "Sepp Straka",
-      "Patrick Reed",
-      "Brooks Koepka"
-    ]
-  },
-  {
-    "name": "Jordan",
-    "picks": [
-      "Cameron Young",
-      "Hideki Matsuyama",
-      "J.J. Spaun",
-      "Jordan Spieth",
-      "Patrick Reed",
-      "Max Homa"
-    ]
-  },
-  {
-    "name": "Angela",
-    "picks": [
-      "Scottie Scheffler",
-      "Maverick McNealy",
-      "Nicolai Højgaard",
-      "Justin Rose",
-      "Patrick Reed",
-      "Nico Echavarria"
-    ]
-  },
-  {
-    "name": "Kate",
-    "picks": [
-      "Scottie Scheffler",
-      "Bryson DeChambeau",
-      "Adam Scott",
-      "Justin Rose",
-      "Keegan Bradley",
-      "Max Homa"
-    ]
-  },
-  {
-    "name": "Kevin",
-    "picks": [
-      "Ludvig Åberg",
-      "Bryson DeChambeau",
-      "J.J. Spaun",
-      "Corey Conners",
-      "Patrick Reed",
-      "Gary Woodland"
-    ]
-  }
+  {name:"Ryan",   picks:["","","","","",""]},
+  {name:"Joey",   picks:["","","","","",""]},
+  {name:"Adam",   picks:["","","","","",""]},
+  {name:"Gabe",   picks:["","","","","",""]},
+  {name:"Blake",  picks:["","","","","",""]},
+  {name:"Andrew", picks:["","","","","",""]},
+  {name:"Andy",   picks:["","","","","",""]},
+  {name:"Erik",   picks:["","","","","",""]},
+  {name:"Alvin",  picks:["","","","","",""]},
+  {name:"Madani", picks:["","","","","",""]},
+  {name:"Nick",   picks:["","","","","",""]},
+  {name:"Dale",   picks:["","","","","",""]}
 ];
 
-// ── State ────────────────────────────────────────────────────────────────────
-var POOL          = loadPool();
-var scores        = {};
-var tourneyMeta   = {tournament_status:"idle", current_round:0, last_updated:null, source:""};
-var loading       = false;
-var isAdmin       = false;
-var activeTab     = "leaderboard";
-var openRow       = null;
-var editOpen      = {};
-var nextRefresh   = null;
+// ── State ─────────────────────────────────────────────────────────────────────
+var POOL           = loadPool();
+var scores         = {};
+var tourneyMeta    = {tournament_status:"idle",current_round:0,last_updated:null,source:""};
+var loading        = false;
+var isAdmin        = false;
+var activeTab      = "leaderboard";
+var openRow        = null;
+var editOpen       = {};
+var nextRefresh    = null;
 var countdownTimer = null;
 
 function loadPool() {
-  // localStorage takes priority — this is where manually-entered picks live.
-  // After export, DEFAULT_POOL has the picks baked in and localStorage on other
-  // devices will be empty, so they naturally fall through to DEFAULT_POOL.
   try {
     var s = localStorage.getItem(POOL_KEY);
     if (s) {
@@ -722,69 +282,46 @@ function loadPool() {
   } catch(e) {}
   return DEFAULT_POOL.map(function(p) { return {name:p.name, picks:p.picks.slice()}; });
 }
-
-function savePool() {
-  localStorage.setItem(POOL_KEY, JSON.stringify(POOL));
-}
-
-function getPassword() {
-  return localStorage.getItem(PWD_KEY) || DEFAULT_PASSWORD;
-}
-
+function savePool() { localStorage.setItem(POOL_KEY, JSON.stringify(POOL)); }
+function getPassword() { return localStorage.getItem(PWD_KEY) || DEFAULT_PASSWORD; }
 function showToast(msg) {
   var t = document.getElementById("toast");
-  t.textContent = msg;
-  t.classList.add("show");
+  t.textContent = msg; t.classList.add("show");
   setTimeout(function() { t.classList.remove("show"); }, 2400);
 }
 
-// ── Scoring ──────────────────────────────────────────────────────────────────
+// ── Scoring ───────────────────────────────────────────────────────────────────
 function golferTotal(g, sc) {
-  var s = sc[g];
-  if (!s) return null;
+  var s = sc[g]; if (!s) return null;
+  var roundsPlayed = tourneyMeta.tournament_status === "completed" ? 4 : (tourneyMeta.current_round || 0);
   var r1 = s.r1 != null ? s.r1 : null;
   var r2 = s.r2 != null ? s.r2 : null;
-  // For MC players, only apply the 80 penalty for rounds that have actually occurred.
-  // Use current_round from tourneyMeta; treat "completed" as round 4.
-  var roundsPlayed = tourneyMeta.tournament_status === "completed" ? 4 : (tourneyMeta.current_round || 0);
-  var r3, r4;
-  if (s.made_cut === false) {
-    r3 = roundsPlayed >= 3 ? MC_SCORE : null;
-    r4 = roundsPlayed >= 4 ? MC_SCORE : null;
-  } else {
-    r3 = s.r3 != null ? s.r3 : null;
-    r4 = s.r4 != null ? s.r4 : null;
-  }
-  var rounds = [r1, r2, r3, r4].filter(function(v) { return v !== null; });
+  var r3 = s.made_cut === false ? (roundsPlayed >= 3 ? MC_SCORE : null) : (s.r3 != null ? s.r3 : null);
+  var r4 = s.made_cut === false ? (roundsPlayed >= 4 ? MC_SCORE : null) : (s.r4 != null ? s.r4 : null);
+  var rounds = [r1,r2,r3,r4].filter(function(v) { return v !== null; });
   if (!rounds.length) return null;
-  return rounds.reduce(function(a, b) { return a + b; }, 0);
+  return rounds.reduce(function(a,b) { return a+b; }, 0);
 }
-
 function best4(picks, sc) {
-  var gs = picks.map(function(g) { return {g:g, t:golferTotal(g, sc)}; });
+  var gs = picks.map(function(g) { return {g:g, t:golferTotal(g,sc)}; });
   var played = gs.filter(function(x) { return x.t !== null; });
-  played.sort(function(a, b) { return a.t - b.t; });
+  played.sort(function(a,b) { return a.t - b.t; });
   if (!played.length) return {total:null, used:[], dropped:[], pending:picks.slice()};
-  var top4 = played.slice(0, 4);
-  var rest = played.slice(4);
-  var pending = gs.filter(function(x) { return x.t === null; }).map(function(x) { return x.g; });
   return {
-    total:   top4.reduce(function(s, x) { return s + x.t; }, 0),
-    used:    top4.map(function(x) { return x.g; }),
-    dropped: rest.map(function(x) { return x.g; }),
-    pending: pending
+    total:   played.slice(0,4).reduce(function(s,x) { return s+x.t; }, 0),
+    used:    played.slice(0,4).map(function(x) { return x.g; }),
+    dropped: played.slice(4).map(function(x) { return x.g; }),
+    pending: gs.filter(function(x) { return x.t === null; }).map(function(x) { return x.g; })
   };
 }
-
 function getRanked() {
   var sorted = POOL.map(function(p) {
     var b = best4(p.picks, scores);
     return {name:p.name, picks:p.picks, total:b.total, used:b.used, dropped:b.dropped, pending:b.pending};
   });
-  sorted.sort(function(a, b) {
-    if (a.total === null && b.total === null) return 0;
-    if (a.total === null) return 1;
-    if (b.total === null) return -1;
+  sorted.sort(function(a,b) {
+    if (a.total===null&&b.total===null) return 0;
+    if (a.total===null) return 1; if (b.total===null) return -1;
     return a.total - b.total;
   });
   var i = 0;
@@ -792,27 +329,21 @@ function getRanked() {
     if (sorted[i].total === null) { sorted[i].rank = "—"; i++; continue; }
     var j = i;
     while (j < sorted.length && sorted[j].total === sorted[i].total) j++;
-    var pos = i + 1;
-    var isTie = (j - i) > 1;
-    var rankStr = isTie ? "T-" + pos : "" + pos;
-    for (var k = i; k < j; k++) sorted[k].rank = rankStr;
+    var pos = i+1, rankStr = (j-i)>1 ? "T-"+pos : ""+pos;
+    for (var k=i; k<j; k++) sorted[k].rank = rankStr;
     i = j;
   }
   return sorted;
 }
 
-// ── ESPN Fetch ───────────────────────────────────────────────────────────────
+// ── ESPN Fetch ────────────────────────────────────────────────────────────────
 function normName(n) {
-  return n.toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+  return n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9\s]/g," ").replace(/\s+/g," ").trim();
 }
-
 function buildNameMap() {
   var m = {};
-  POOL.forEach(function(p) {
-    p.picks.forEach(function(g) { m[normName(g)] = g; });
-  });
+  POOL.forEach(function(p) { p.picks.forEach(function(g) { if(g) m[normName(g)] = g; }); });
   return m;
 }
 
@@ -823,154 +354,129 @@ async function fetchESPN() {
   try {
     var r = await fetch(ESPN_URL, {mode:"cors"});
     if (!r.ok) throw new Error("direct failed");
-    data = await r.json();
-    source = "ESPN";
+    data = await r.json(); source = "ESPN";
   } catch(e) {
     var r2 = await fetch(PROXY_URL, {mode:"cors"});
     if (!r2.ok) throw new Error("HTTP " + r2.status);
-    data = await r2.json();
-    source = "ESPN (proxy)";
+    data = await r2.json(); source = "ESPN (proxy)";
   }
 
   var event = null;
   if (data.events) {
-    for (var i = 0; i < data.events.length; i++) {
+    for (var i=0; i<data.events.length; i++) {
       var ev = data.events[i];
       var nm = (ev.name || "").toLowerCase();
-      if (nm.indexOf("masters") !== -1 && nm.indexOf("women") === -1 && nm.indexOf("amateur") === -1) {
+      // Match US Open but not Women's Open, British Open (The Open), or US Amateur
+      if ((nm.indexOf("u.s. open") !== -1 || nm.indexOf("us open") !== -1) &&
+          nm.indexOf("women") === -1 && nm.indexOf("amateur") === -1 && nm.indexOf("senior") === -1) {
         event = ev; break;
       }
     }
   }
   if (!event) {
-    return {tournament_status:"not_started", current_round:0, scores:{}, source:source, note:"Masters not yet in ESPN schedule"};
+    return {tournament_status:"not_started", current_round:0, scores:{}, source:source, note:"U.S. Open not yet in ESPN schedule"};
   }
 
   var statusName = (event.status && event.status.type && event.status.type.name) || "";
-  var tournament_status =
-    statusName === "STATUS_FINAL"       ? "completed"   :
-    statusName === "STATUS_IN_PROGRESS" ? "in_progress" : "not_started";
+  var tournament_status = statusName==="STATUS_FINAL" ? "completed" : statusName==="STATUS_IN_PROGRESS" ? "in_progress" : "not_started";
   var comp = event.competitions && event.competitions[0];
   var current_round = (comp && comp.status && comp.status.period) || 0;
   var nameMap = buildNameMap();
   var parsed = {};
 
   var competitors = (comp && comp.competitors) || [];
-  for (var ci = 0; ci < competitors.length; ci++) {
+  for (var ci=0; ci<competitors.length; ci++) {
     var c = competitors[ci];
     var espnName = (c.athlete && c.athlete.displayName) || "";
     var poolName = nameMap[normName(espnName)];
     if (!poolName) continue;
     var statusTypeName = (c.status && c.status.type && c.status.type.name) || "";
-    var mc = statusTypeName === "STATUS_CUT" || statusTypeName === "STATUS_MISSED_CUT";
-    var rnds = {r1:null, r2:null, r3:null, r4:null};
+    var mc = statusTypeName==="STATUS_CUT" || statusTypeName==="STATUS_MISSED_CUT";
+    var rnds = {r1:null,r2:null,r3:null,r4:null};
     var ls = c.linescores || [];
-    for (var li = 0; li < ls.length && li < 4; li++) {
+    for (var li=0; li<ls.length && li<4; li++) {
       var v = parseFloat(ls[li].value);
       if (!isNaN(v) && v > 0) {
-        if (li === 0) rnds.r1 = v;
-        else if (li === 1) rnds.r2 = v;
-        else if (li === 2) rnds.r3 = v;
-        else if (li === 3) rnds.r4 = v;
+        if (li===0) rnds.r1=v; else if (li===1) rnds.r2=v;
+        else if (li===2) rnds.r3=v; else if (li===3) rnds.r4=v;
       }
     }
     var espnPos = (c.status && c.status.position && c.status.position.displayName) ||
                   (c.status && c.status.displayValue) || null;
     parsed[poolName] = {r1:rnds.r1, r2:rnds.r2, r3:rnds.r3, r4:rnds.r4, made_cut:!mc, espnPos:espnPos};
   }
-
   return {tournament_status:tournament_status, current_round:current_round,
           scores:parsed, source:source, last_updated:new Date().toISOString(), note:null};
 }
 
 async function doRefresh(isManual) {
   if (loading) return;
-  loading = true;
-  renderHeader();
-  ["error-bar","info-bar","success-bar"].forEach(function(id) {
-    document.getElementById(id).style.display = "none";
-  });
+  loading = true; renderHeader();
+  ["error-bar","info-bar","success-bar"].forEach(function(id) { document.getElementById(id).style.display="none"; });
   try {
     var result = await fetchESPN();
     scores = result.scores || {};
-    tourneyMeta = {
-      tournament_status: result.tournament_status,
-      current_round: result.current_round || 0,
-      last_updated: result.last_updated || new Date().toISOString(),
-      source: result.source || ""
-    };
+    tourneyMeta = {tournament_status:result.tournament_status, current_round:result.current_round||0,
+                   last_updated:result.last_updated||new Date().toISOString(), source:result.source||""};
     if (result.note) {
-      var ib = document.getElementById("info-bar");
-      ib.textContent = "ℹ " + result.note;
-      ib.style.display = "block";
+      var ib = document.getElementById("info-bar"); ib.textContent="ℹ "+result.note; ib.style.display="block";
     }
     var allPicks = [];
-    POOL.forEach(function(p) { p.picks.forEach(function(g) { if (allPicks.indexOf(g) === -1) allPicks.push(g); }); });
+    POOL.forEach(function(p) { p.picks.forEach(function(g) { if(g && allPicks.indexOf(g)===-1) allPicks.push(g); }); });
     var missing = allPicks.filter(function(g) { return !scores[g]; });
     if (missing.length && result.tournament_status !== "not_started") {
       var ib2 = document.getElementById("info-bar");
-      ib2.textContent = "ℹ " + missing.length + " golfer(s) not matched in ESPN data: " + missing.slice(0,4).join(", ") + (missing.length > 4 ? "…" : "");
-      ib2.style.display = "block";
+      ib2.textContent="ℹ "+missing.length+" golfer(s) not matched in ESPN data: "+missing.slice(0,4).join(", ")+(missing.length>4?"…":"");
+      ib2.style.display="block";
     }
     if (isManual && isAdmin) {
       var sb = document.getElementById("success-bar");
-      sb.textContent = "✓ Scores refreshed · " + Object.keys(scores).length + " golfers found · " + result.source;
-      sb.style.display = "block";
-      setTimeout(function() { sb.style.display = "none"; }, 5000);
+      sb.textContent="✓ Scores refreshed · "+Object.keys(scores).length+" golfers found · "+result.source;
+      sb.style.display="block";
+      setTimeout(function() { sb.style.display="none"; }, 5000);
     }
-    scheduleNextRefresh();
-    renderAll();
     var xlBtn = document.getElementById("btn-xl");
     if (xlBtn) xlBtn.disabled = Object.keys(scores).length === 0;
+    scheduleNextRefresh(); renderAll();
   } catch(e) {
-    var eb = document.getElementById("error-bar");
-    eb.textContent = "⚠ Could not fetch scores: " + e.message;
-    eb.style.display = "block";
-    console.error(e);
-    scheduleNextRefresh();
+    var eb = document.getElementById("error-bar"); eb.textContent="⚠ Could not fetch scores: "+e.message; eb.style.display="block";
+    console.error(e); scheduleNextRefresh();
   }
-  loading = false;
-  renderHeader();
+  loading = false; renderHeader();
 }
 
-// ── Auto-refresh ─────────────────────────────────────────────────────────────
+// ── Auto-refresh ──────────────────────────────────────────────────────────────
 function scheduleNextRefresh() {
   nextRefresh = Date.now() + AUTO_REFRESH_MS;
   if (countdownTimer) clearInterval(countdownTimer);
   countdownTimer = setInterval(function() {
-    var remaining = nextRefresh - Date.now();
-    if (remaining <= 0) { clearInterval(countdownTimer); doRefresh(false); return; }
-    var m = Math.floor(remaining / 60000);
-    var s = Math.floor((remaining % 60000) / 1000);
+    var rem = nextRefresh - Date.now();
+    if (rem <= 0) { clearInterval(countdownTimer); doRefresh(false); return; }
+    var m = Math.floor(rem/60000), s = Math.floor((rem%60000)/1000);
     var el = document.getElementById("countdown-label");
-    if (el) el.textContent = "Next auto-refresh in " + m + "m " + (s < 10 ? "0" : "") + s + "s";
+    if (el) el.textContent = "Next auto-refresh in "+m+"m "+(s<10?"0":"")+s+"s";
   }, 1000);
 }
 
-// ── Auth ─────────────────────────────────────────────────────────────────────
+// ── Auth ──────────────────────────────────────────────────────────────────────
 function openLoginModal() {
   document.getElementById("login-modal").classList.add("open");
   document.getElementById("modal-error").textContent = "";
   document.getElementById("pwd-input").value = "";
   setTimeout(function() { document.getElementById("pwd-input").focus(); }, 100);
 }
-function closeLoginModal() {
-  document.getElementById("login-modal").classList.remove("open");
-}
+function closeLoginModal() { document.getElementById("login-modal").classList.remove("open"); }
 function doLogin() {
   var pwd = document.getElementById("pwd-input").value;
   if (pwd === getPassword()) {
-    isAdmin = true;
-    closeLoginModal();
+    isAdmin = true; closeLoginModal();
     document.getElementById("admin-badge").classList.add("visible");
     document.getElementById("btn-refresh").classList.add("visible");
     document.getElementById("editor-tab").classList.add("visible");
-    showToast("✓ Logged in as admin");
-    renderAll();
+    showToast("✓ Logged in as admin"); renderAll();
   } else {
     document.getElementById("modal-error").textContent = "Incorrect password.";
-    document.getElementById("pwd-input").value = "";
-    document.getElementById("pwd-input").focus();
+    document.getElementById("pwd-input").value = ""; document.getElementById("pwd-input").focus();
   }
 }
 function doLogout() {
@@ -979,444 +485,267 @@ function doLogout() {
   document.getElementById("btn-refresh").classList.remove("visible");
   document.getElementById("editor-tab").classList.remove("visible");
   if (activeTab === "editor") switchTab("leaderboard");
-  showToast("Logged out");
-  renderAll();
+  showToast("Logged out"); renderAll();
 }
-
 document.getElementById("btn-login").addEventListener("click", doLogin);
-document.getElementById("pwd-input").addEventListener("keydown", function(e) { if (e.key === "Enter") doLogin(); });
+document.getElementById("pwd-input").addEventListener("keydown", function(e) { if(e.key==="Enter") doLogin(); });
 document.getElementById("btn-refresh").addEventListener("click", function() { doRefresh(true); });
 document.getElementById("login-modal").addEventListener("click", function(e) {
-  if (e.target === document.getElementById("login-modal")) closeLoginModal();
+  if (e.target===document.getElementById("login-modal")) closeLoginModal();
 });
 
-// ── Export ───────────────────────────────────────────────────────────────────
+// ── Export HTML ───────────────────────────────────────────────────────────────
 async function exportSite() {
   var src;
   try {
     var resp = await fetch(location.href);
     if (!resp.ok) throw new Error("HTTP " + resp.status);
     src = await resp.text();
-  } catch(e) {
-    alert("Export failed: could not fetch page source.\n" + e.message);
-    return;
-  }
+  } catch(e) { alert("Export failed: could not fetch page source.\n" + e.message); return; }
 
-  // Find DEFAULT_POOL array boundaries using bracket counting
   var startMarker = "var DEFAULT_POOL = [";
   var startIdx = src.indexOf(startMarker);
   if (startIdx === -1) { alert("Export failed: could not locate pool data."); return; }
 
-  var depth = 0, endIdx = -1;
-  var searchFrom = startIdx + startMarker.length;
-  for (var i = searchFrom; i < src.length - 1; i++) {
-    if (src[i] === "[") {
-      depth++;
-    } else if (src[i] === "]") {
-      if (depth === 0 && src[i + 1] === ";") {
-        endIdx = i + 2;
-        break;
-      }
+  var depth=0, endIdx=-1;
+  for (var i=startIdx+startMarker.length; i<src.length-1; i++) {
+    if (src[i]==="[") depth++;
+    else if (src[i]==="]") {
+      if (depth===0 && src[i+1]===";") { endIdx=i+2; break; }
       depth--;
     }
   }
-  if (endIdx === -1) { alert("Export failed: could not find end of pool data."); return; }
+  if (endIdx===-1) { alert("Export failed: could not find end of pool data."); return; }
 
   var poolJson = JSON.stringify(POOL, null, 2);
   var exported = src.slice(0, startIdx) + "var DEFAULT_POOL = " + poolJson + ";" + src.slice(endIdx);
-
   var blob = new Blob([exported], {type:"text/html"});
   var url  = URL.createObjectURL(blob);
   var a    = document.createElement("a");
-  a.href = url;
-  a.download = "index.html";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  a.href=url; a.download="index.html";
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
   showToast("✓ index.html downloaded — upload to GitHub to go live");
 }
 
-// ── Render: Header ───────────────────────────────────────────────────────────
-function renderHeader() {
-  var statusMap = {
-    idle:        "Loading scores…",
-    not_started: "Tournament has not started yet",
-    in_progress: "Round " + tourneyMeta.current_round + " · In Progress",
-    completed:   "Tournament Complete · Final Results",
-    no_data:     "Score data unavailable"
-  };
-  document.getElementById("status-label").textContent = statusMap[tourneyMeta.tournament_status] || "";
-  var parts = [];
-  if (tourneyMeta.last_updated) parts.push("Updated " + new Date(tourneyMeta.last_updated).toLocaleTimeString());
-  if (tourneyMeta.source) parts.push("· " + tourneyMeta.source);
-  document.getElementById("meta-label").textContent = parts.join(" ");
-  document.getElementById("btn-refresh").disabled = loading;
-  document.getElementById("btn-refresh").innerHTML = loading ? '<span class="spinner"></span>Loading…' : "↻ Refresh Now";
-  var dot = document.getElementById("live-dot");
-  var lbl = document.getElementById("live-label");
-  if (tourneyMeta.tournament_status === "in_progress") { dot.classList.add("pulsing"); lbl.textContent = "LIVE"; }
-  else if (tourneyMeta.tournament_status === "completed") { dot.classList.remove("pulsing"); lbl.textContent = "FINAL"; }
-  else { dot.classList.remove("pulsing"); lbl.textContent = "PRE-TOURNAMENT"; }
-}
-
-// ── Render: Leaderboard ──────────────────────────────────────────────────────
-function renderLeaderboard() {
-  var el = document.getElementById("tab-leaderboard");
-  var ranked = getRanked();
-  var has = Object.keys(scores).length > 0;
-  if (!has) {
-    el.innerHTML = '<div class="placeholder">Scores will appear here once the tournament begins<br><span style="font-size:12px;color:#2a4a2a">Auto-refreshes every 60 minutes · No action needed</span></div>';
-    return;
-  }
-  var html = "";
-  for (var i = 0; i < ranked.length; i++) {
-    var p = ranked[i];
-    var isOpen = openRow === p.name;
-    var numPos = p.rank === "—" ? 999 : parseInt(p.rank.replace("T-", ""), 10);
-    var rc = numPos === 1 ? "gold" : numPos === 2 ? "silver" : numPos === 3 ? "bronze" : numPos === 4 ? "payout4" : numPos === 5 ? "payout5" : "other";
-    var rowPaid = numPos <= 5 ? " paid-" + numPos : "";
-
-    var dots = "";
-    for (var ti = 0; ti < p.picks.length; ti++) {
-      var g = p.picks[ti];
-      var pend = p.pending.indexOf(g) !== -1;
-      var drop = p.dropped.indexOf(g) !== -1;
-      var bg = pend ? "#222" : drop ? "#1a0505" : TIER_COLORS[ti];
-      var op = drop ? "0.3" : "1";
-      dots += '<div class="lb-dot" style="background:' + bg + ';opacity:' + op + '" title="T' + (ti+1) + ': ' + g + '"></div>';
-    }
-
-    var drows = "";
-    for (var ti2 = 0; ti2 < p.picks.length; ti2++) {
-      var g2 = p.picks[ti2];
-      var s2 = scores[g2];
-      var t2 = golferTotal(g2, scores);
-      var mc2 = s2 && s2.made_cut === false;
-      var inB4 = p.used.indexOf(g2) !== -1;
-      var isDr = p.dropped.indexOf(g2) !== -1;
-      var roundsPlayed2 = tourneyMeta.tournament_status === "completed" ? 4 : (tourneyMeta.current_round || 0);
-      var r1v = s2 ? s2.r1 : null;
-      var r2v = s2 ? s2.r2 : null;
-      var r3v = mc2 ? (roundsPlayed2 >= 3 ? MC_SCORE : null) : (s2 ? s2.r3 : null);
-      var r4v = mc2 ? (roundsPlayed2 >= 4 ? MC_SCORE : null) : (s2 ? s2.r4 : null);
-      var rnds2 = [r1v, r2v, r3v, r4v];
-      var spans = "";
-      for (var ri = 0; ri < rnds2.length; ri++) {
-        var v2 = rnds2[ri];
-        if (v2 === null || v2 === undefined) spans += '<span class="empty-round">·</span>';
-        else if (v2 === MC_SCORE && ri >= 2 && mc2) spans += '<span class="mc-round">80</span>';
-        else spans += "<span>" + v2 + "</span>";
-      }
-      var scoreClass = mc2 ? "sc-mc" : inB4 ? "sc-gold" : "sc-drop";
-      var badgeClass = inB4 ? "badge-count" : isDr ? "badge-drop" : "";
-      var badgeText  = inB4 ? "✓ count" : isDr ? "✗ drop" : "";
-      var posTag = (s2 && s2.espnPos) ? '<span class="espn-pos">' + s2.espnPos + '</span>' : "";
-      var mcTag  = mc2 ? '<span class="mc-tag">MC</span>' : "";
-      drows += '<div class="detail-row' + (isDr ? " dropped" : "") + '">'
-        + '<div class="tier-badge" style="background:' + TIER_COLORS[ti2] + '">T' + (ti2+1) + '</div>'
-        + '<div class="detail-golfer">' + g2 + mcTag + posTag + '</div>'
-        + '<div class="detail-rounds">' + spans + '</div>'
-        + '<div class="detail-score ' + scoreClass + '">' + (t2 !== null ? t2 : "—") + '</div>'
-        + '<div class="detail-badge ' + badgeClass + '">' + badgeText + '</div>'
-        + '</div>';
-    }
-
-    var safeN = p.name.replace(/'/g, "\\'");
-    html += '<div class="lb-row' + (isOpen ? " open" : "") + rowPaid + '" onclick="toggleRow(\'' + safeN + '\')">'
-      + '<div class="lb-rank ' + rc + '">' + p.rank + '</div>'
-      + '<div class="lb-name"><div class="lb-name-main">' + p.name + '</div></div>'
-      + '<div class="lb-dots">' + dots + '</div>'
-      + '<div class="lb-total' + (p.total === null ? " empty" : "") + '">' + (p.total !== null ? p.total : "—") + '</div>'
-      + '<div class="lb-chevron">' + (isOpen ? "▲" : "▼") + '</div>'
-      + '</div>'
-      + '<div class="lb-detail' + (isOpen ? " open" : "") + '">'
-      + '<div class="detail-header">Golfer Scores · Best 4 of 6</div>'
-      + drows
-      + '<div class="detail-footer">Best 4 Total: ' + (p.total !== null ? p.total : "—") + '</div>'
-      + '</div>';
-  }
-  el.innerHTML = html;
-}
-
-// ── Render: All Picks ────────────────────────────────────────────────────────
-function renderPicksView() {
-  var el = document.getElementById("tab-picks-view");
-  var ranked = getRanked();
-  var has = Object.keys(scores).length > 0;
-  var html = '<div class="picks-grid">';
-  for (var i = 0; i < ranked.length; i++) {
-    var p = ranked[i];
-    var rows = "";
-    for (var ti = 0; ti < p.picks.length; ti++) {
-      var g = p.picks[ti];
-      var t = golferTotal(g, scores);
-      var mc = scores[g] && scores[g].made_cut === false;
-      var inB4 = p.used.indexOf(g) !== -1;
-      var isDr = p.dropped.indexOf(g) !== -1;
-      var sc = inB4 ? "ps-count" : isDr ? "ps-drop" : "ps-normal";
-      var chk = has ? ('<div class="pick-chk ' + (inB4 ? "chk-y" : isDr ? "chk-n" : "") + '">' + (inB4 ? "✓" : isDr ? "✗" : "") + '</div>') : "";
-      var mcTag = mc ? '<span class="mc-tag">MC</span>' : "";
-      rows += '<div class="pick-row" style="opacity:' + (isDr ? 0.38 : 1) + '">'
-        + '<div class="pick-dot" style="background:' + TIER_COLORS[ti] + '"></div>'
-        + '<div class="pick-golfer">' + g + mcTag + '</div>'
-        + '<div class="pick-score ' + sc + '">' + (t !== null ? t : "—") + '</div>'
-        + chk + '</div>';
-    }
-    html += '<div class="pick-card">'
-      + '<div class="pick-card-header">'
-      + '<div><div class="pick-card-name">' + p.name + '</div></div>'
-      + '<div class="pick-card-rank"><div class="pick-card-rank-label">RANK</div><div class="pick-card-rank-num">' + p.rank + '</div></div>'
-      + '</div>' + rows
-      + '<div class="pick-card-footer">'
-      + '<div class="pick-card-label">best 4 of 6</div>'
-      + '<div class="pick-card-total' + (p.total === null ? " empty" : "") + '">' + (p.total !== null ? p.total : "—") + '</div>'
-      + '</div></div>';
-  }
-  html += '</div>';
-  el.innerHTML = html;
-}
-
-// ── Render: Editor ───────────────────────────────────────────────────────────
-function renderEditor() {
-  var el = document.getElementById("tab-editor");
-  var cards = "";
-  for (var idx = 0; idx < POOL.length; idx++) {
-    cards += renderPCard(POOL[idx], idx);
-  }
-  el.innerHTML = '<div class="editor-toolbar">'
-    + '<h2>✏️ Manage Participants</h2>'
-    + '<button class="btn-add" onclick="addParticipant()">+ Add Participant</button>'
-    + '</div>'
-    + '<div class="editor-note">Edit participant names and golfer picks. Click <strong>Save Participant</strong> to commit — changes are live immediately.<br>'
-    + 'Golfer names must match the Masters field exactly, e.g. <em>"Rory McIlroy"</em>. Accents are handled automatically.</div>'
-    + cards
-    + '<div class="pwd-section"><h3>🔒 Change Admin Password</h3>'
-    + '<div class="pwd-row">'
-    + '<div class="form-group"><label class="form-label">New Password</label><input class="fi" type="password" id="pwd-new" placeholder="New password"/></div>'
-    + '<div class="form-group"><label class="form-label">Confirm</label><input class="fi" type="password" id="pwd-confirm" placeholder="Confirm"/></div>'
-    + '<button class="btn-change-pwd" onclick="changePassword()">Update</button>'
-    + '</div></div>'
-    + '<div class="export-section">'
-    + '<div class="export-section-text">'
-    + '<div class="export-section-title">📥 Export &amp; Deploy</div>'
-    + '<div class="export-section-desc">Downloads a fresh <strong>index.html</strong> with the current picks baked in — upload to GitHub and everyone sees the latest picks instantly.</div>'
-    + '</div>'
-    + '<button class="btn-export" onclick="exportSite()">⬇ Export index.html</button>'
-    + '</div>'
-    + '<div style="text-align:right;margin-top:8px;"><button class="admin-logout" onclick="doLogout()">🚪 Log out of admin</button></div>';
-}
-
-function renderPCard(p, idx) {
-  var isOpen = editOpen[idx];
-  var filled = p.picks.filter(function(x) { return !!x; }).length;
-  var tiers = "";
-  for (var ti = 0; ti < 6; ti++) {
-    tiers += '<div class="tier-row">'
-      + '<div class="tier-lbl"><div class="tier-dot-sm" style="background:' + TIER_COLORS[ti] + '"></div>T' + (ti+1) + '</div>'
-      + '<input class="fi" id="pick-' + idx + '-' + ti + '" value="' + (p.picks[ti] || "").replace(/"/g, "&quot;") + '" placeholder="' + TIER_NAMES[ti] + '"/>'
-      + '</div>';
-  }
-  return '<div class="pcard" id="pcard-' + idx + '">'
-    + '<div class="pcard-header' + (isOpen ? " open" : "") + '" onclick="toggleEdit(' + idx + ')">'
-    + '<div class="pcard-num">' + (idx+1) + '</div>'
-    + '<div class="pcard-names"><div class="pcard-name">' + p.name + '</div></div>'
-    + '<div class="pcard-summary">' + filled + '/6 picks</div>'
-    + '<button class="btn-del" onclick="delParticipant(event,' + idx + ')">✕</button>'
-    + '<div class="pcard-chevron">' + (isOpen ? "▲" : "▼") + '</div>'
-    + '</div>'
-    + '<div class="pcard-form' + (isOpen ? " open" : "") + '">'
-    + '<div class="form-group"><label class="form-label">Name</label>'
-    + '<input class="fi" id="pname-' + idx + '" value="' + p.name.replace(/"/g, "&quot;") + '"/></div>'
-    + '<div class="form-group"><label class="form-label">Golfer Picks — one per tier</label></div>'
-    + '<div class="tier-grid">' + tiers + '</div>'
-    + '<div class="form-actions">'
-    + '<button class="btn-cancel-p" onclick="cancelEdit(' + idx + ')">Cancel</button>'
-    + '<button class="btn-save-p" onclick="saveParticipant(' + idx + ')">Save Participant</button>'
-    + '</div></div></div>';
-}
-
-function toggleEdit(idx) { editOpen[idx] = !editOpen[idx]; renderEditor(); }
-function cancelEdit(idx)  { editOpen[idx] = false;          renderEditor(); }
-
-function saveParticipant(idx) {
-  var name = document.getElementById("pname-" + idx).value.trim();
-  var picks = [];
-  for (var ti = 0; ti < 6; ti++) {
-    picks.push(document.getElementById("pick-" + idx + "-" + ti).value.trim());
-  }
-  if (!name) { alert("Please enter a name."); return; }
-  var missing = [];
-  for (var i = 0; i < picks.length; i++) { if (!picks[i]) missing.push("Tier " + (i+1)); }
-  if (missing.length && !confirm("Missing picks for: " + missing.join(", ") + ". Save anyway?")) return;
-  POOL[idx] = {name:name, picks:picks};
-  editOpen[idx] = false;
-  savePool();
-  showToast("✓ Participant saved");
-  renderEditor();
-}
-
-function addParticipant() {
-  POOL.push({name:"New Participant", picks:["","","","","",""]});
-  editOpen[POOL.length - 1] = true;
-  savePool();
-  renderEditor();
-  setTimeout(function() {
-    var el = document.getElementById("pcard-" + (POOL.length - 1));
-    if (el) el.scrollIntoView({behavior:"smooth"});
-  }, 100);
-}
-
-function delParticipant(e, idx) {
-  e.stopPropagation();
-  if (!confirm("Remove " + POOL[idx].name + " from the pool?")) return;
-  POOL.splice(idx, 1);
-  var newOpen = {};
-  Object.keys(editOpen).forEach(function(k) {
-    var n = Number(k);
-    if (n < idx) newOpen[k] = editOpen[k];
-    else if (n > idx) newOpen[n-1] = editOpen[k];
-  });
-  editOpen = newOpen;
-  savePool();
-  renderEditor();
-}
-
-function changePassword() {
-  var p1 = document.getElementById("pwd-new").value;
-  var p2 = document.getElementById("pwd-confirm").value;
-  if (!p1) { alert("Enter a new password."); return; }
-  if (p1 !== p2) { alert("Passwords don't match."); return; }
-  if (p1.length < 4) { alert("Password must be at least 4 characters."); return; }
-  localStorage.setItem(PWD_KEY, p1);
-  showToast("✓ Password updated");
-  document.getElementById("pwd-new").value = "";
-  document.getElementById("pwd-confirm").value = "";
-}
-
-function toggleRow(name) { openRow = openRow === name ? null : name; renderLeaderboard(); }
-
-// ── Export to Excel ───────────────────────────────────────────────────────────
+// ── Export Excel ──────────────────────────────────────────────────────────────
 function exportExcel() {
   var ranked = getRanked();
-  var has = Object.keys(scores).length > 0;
   var ts = tourneyMeta.tournament_status;
-  var roundLabel = ts === "completed" ? "Final" : ts === "in_progress" ? "Round " + tourneyMeta.current_round : "Pre-Tournament";
+  var roundLabel = ts==="completed" ? "Final" : ts==="in_progress" ? "Round"+tourneyMeta.current_round : "Pre-Tournament";
   var dateStr = tourneyMeta.last_updated ? new Date(tourneyMeta.last_updated).toLocaleString() : new Date().toLocaleString();
 
-  // ── Sheet 1: Leaderboard ──────────────────────────────────────────────────
   var lb = [];
-  lb.push(["Masters Pool 2026 · Leaderboard", "", "", "", "", "", "", ""]);
-  lb.push([roundLabel + " · " + dateStr, "", "", "", "", "", "", ""]);
+  lb.push(["U.S. Open Pool 2026 · Leaderboard","","","","","","","",""]);
+  lb.push([roundLabel+" · "+dateStr,"","","","","","","",""]);
   lb.push([]);
-  lb.push(["Rank", "Name", "Best 4 Total", "T1 Golfer", "T1 Score", "T2 Golfer", "T2 Score", "T3 Golfer", "T3 Score", "T4 Golfer", "T4 Score", "T5 Golfer", "T5 Score", "T6 Golfer", "T6 Score"]);
-
-  for (var i = 0; i < ranked.length; i++) {
-    var p = ranked[i];
-    var row = [p.rank, p.name, p.total !== null ? p.total : "—"];
-    for (var ti = 0; ti < 6; ti++) {
-      var g = p.picks[ti] || "";
-      var t = g ? golferTotal(g, scores) : null;
-      var mc = g && scores[g] && scores[g].made_cut === false;
-      var scoreStr = t !== null ? t : (has ? "—" : "");
-      if (mc) scoreStr = scoreStr + " (MC)";
-      row.push(g);
-      row.push(scoreStr);
+  lb.push(["Rank","Name","Best 4 Total","T1 Golfer","T1 Score","T2 Golfer","T2 Score","T3 Golfer","T3 Score","T4 Golfer","T4 Score","T5 Golfer","T5 Score","T6 Golfer","T6 Score"]);
+  for (var i=0; i<ranked.length; i++) {
+    var p=ranked[i], row=[p.rank, p.name, p.total!==null?p.total:"—"];
+    for (var ti=0; ti<6; ti++) {
+      var g=p.picks[ti]||"", t=g?golferTotal(g,scores):null;
+      var mc=g&&scores[g]&&scores[g].made_cut===false;
+      row.push(g); row.push(t!==null ? (mc?t+" (MC)":t) : (g?"—":""));
     }
     lb.push(row);
   }
 
-  // ── Sheet 2: Picks Detail ─────────────────────────────────────────────────
-  // One block per participant: header row then 6 golfer rows + totals row
   var detail = [];
-  detail.push(["Masters Pool 2026 · Picks Detail", "", "", "", "", "", ""]);
-  detail.push([roundLabel + " · " + dateStr, "", "", "", "", "", ""]);
-
-  for (var pi = 0; pi < ranked.length; pi++) {
-    var p2 = ranked[pi];
+  detail.push(["U.S. Open Pool 2026 · Picks Detail","","","","","","",""]);
+  detail.push([roundLabel+" · "+dateStr,"","","","","","",""]);
+  for (var pi=0; pi<ranked.length; pi++) {
+    var p2=ranked[pi];
     detail.push([]);
-    // Participant header
-    detail.push([p2.rank + "  " + p2.name, "", "", "", "", "", ""]);
-    detail.push(["Tier", "Golfer", "Position", "R1", "R2", "R3", "R4", "Total", "Counts?"]);
-
-    var golferTotals = [];
-    for (var ti2 = 0; ti2 < 6; ti2++) {
-      var g2 = p2.picks[ti2] || "";
-      var sc = g2 ? scores[g2] : null;
-      var mc2 = sc && sc.made_cut === false;
-      var roundsPlayedXl = tourneyMeta.tournament_status === "completed" ? 4 : (tourneyMeta.current_round || 0);
-      var r1 = sc ? sc.r1 : null;
-      var r2 = sc ? sc.r2 : null;
-      var r3 = mc2 ? (roundsPlayedXl >= 3 ? 80 : null) : (sc ? sc.r3 : null);
-      var r4 = mc2 ? (roundsPlayedXl >= 4 ? 80 : null) : (sc ? sc.r4 : null);
-      var tot2 = g2 ? golferTotal(g2, scores) : null;
-      var espnPos = sc ? (sc.espnPos || "") : "";
-      var inBest4 = p2.used.indexOf(g2) !== -1;
-      var isDrop  = p2.dropped.indexOf(g2) !== -1;
-      var countsStr = !g2 ? "" : inBest4 ? "✓ Count" : isDrop ? "✗ Drop" : "";
-      golferTotals.push(tot2);
-      detail.push([
-        "Tier " + (ti2+1),
-        g2 + (mc2 ? " (MC)" : ""),
-        espnPos,
-        r1 !== null ? r1 : "",
-        r2 !== null ? r2 : "",
-        r3 !== null ? r3 : "",
-        r4 !== null ? r4 : "",
-        tot2 !== null ? tot2 : "",
-        countsStr
-      ]);
+    detail.push([p2.rank+"  "+p2.name,"","","","","","",""]);
+    detail.push(["Tier","Golfer","Position","R1","R2","R3","R4","Total","Counts?"]);
+    var roundsPlayed = ts==="completed"?4:(tourneyMeta.current_round||0);
+    for (var ti2=0; ti2<6; ti2++) {
+      var g2=p2.picks[ti2]||"", sc=g2?scores[g2]:null, mc2=sc&&sc.made_cut===false;
+      var r1=sc?sc.r1:null, r2=sc?sc.r2:null;
+      var r3=mc2?(roundsPlayed>=3?80:null):(sc?sc.r3:null);
+      var r4=mc2?(roundsPlayed>=4?80:null):(sc?sc.r4:null);
+      var tot=g2?golferTotal(g2,scores):null;
+      var inB4=p2.used.indexOf(g2)!==-1, isDr=p2.dropped.indexOf(g2)!==-1;
+      detail.push(["Tier "+(ti2+1), g2+(mc2?" (MC)":""), sc?(sc.espnPos||""):"",
+        r1!==null?r1:"", r2!==null?r2:"", r3!==null?r3:"", r4!==null?r4:"",
+        tot!==null?tot:"", !g2?"":(inB4?"✓ Count":isDr?"✗ Drop":"")]);
     }
-    // Best 4 totals row
-    detail.push(["", "", "", "", "", "", "", "Best 4 Total:", p2.total !== null ? p2.total : "—"]);
+    detail.push(["","","","","","","","Best 4 Total:", p2.total!==null?p2.total:"—"]);
   }
 
-  // ── Build workbook ────────────────────────────────────────────────────────
   var wb = XLSX.utils.book_new();
-
   var wsLb = XLSX.utils.aoa_to_sheet(lb);
-  // Column widths for leaderboard
-  wsLb["!cols"] = [
-    {wch:8},{wch:16},{wch:12},
-    {wch:22},{wch:10},{wch:22},{wch:10},{wch:22},{wch:10},
-    {wch:22},{wch:10},{wch:22},{wch:10},{wch:22},{wch:10}
-  ];
+  wsLb["!cols"]=[{wch:8},{wch:16},{wch:12},{wch:22},{wch:10},{wch:22},{wch:10},{wch:22},{wch:10},{wch:22},{wch:10},{wch:22},{wch:10},{wch:22},{wch:10}];
   XLSX.utils.book_append_sheet(wb, wsLb, "Leaderboard");
-
-  var wsDetail = XLSX.utils.aoa_to_sheet(detail);
-  wsDetail["!cols"] = [{wch:10},{wch:24},{wch:10},{wch:6},{wch:6},{wch:6},{wch:6},{wch:8},{wch:10}];
-  XLSX.utils.book_append_sheet(wb, wsDetail, "Picks Detail");
-
-  // Download
-  var filename = "MastersPool2026_" + roundLabel.replace(/\s/g,"") + ".xlsx";
-  XLSX.writeFile(wb, filename);
+  var wsD = XLSX.utils.aoa_to_sheet(detail);
+  wsD["!cols"]=[{wch:10},{wch:24},{wch:10},{wch:6},{wch:6},{wch:6},{wch:6},{wch:8},{wch:10}];
+  XLSX.utils.book_append_sheet(wb, wsD, "Picks Detail");
+  XLSX.writeFile(wb, "USOpenPool2026_"+roundLabel+".xlsx");
   showToast("✓ Excel file downloaded");
 }
 
-// ── Tabs ─────────────────────────────────────────────────────────────────────
-function switchTab(tab) {
-  document.querySelectorAll(".tab").forEach(function(b) { b.classList.remove("active"); });
-  var btn = document.querySelector('[data-tab="' + tab + '"]');
-  if (btn) btn.classList.add("active");
-  activeTab = tab;
-  ["leaderboard","picks-view","editor"].forEach(function(t) {
-    document.getElementById("tab-" + t).style.display = t === tab ? "" : "none";
-  });
-  openRow = null;
-  renderAll();
+// ── Render Header ─────────────────────────────────────────────────────────────
+function renderHeader() {
+  var statusMap = {idle:"Loading scores…", not_started:"Tournament has not started yet",
+    in_progress:"Round "+tourneyMeta.current_round+" · In Progress",
+    completed:"Tournament Complete · Final Results", no_data:"Score data unavailable"};
+  document.getElementById("status-label").textContent = statusMap[tourneyMeta.tournament_status]||"";
+  var parts=[];
+  if(tourneyMeta.last_updated) parts.push("Updated "+new Date(tourneyMeta.last_updated).toLocaleTimeString());
+  if(tourneyMeta.source) parts.push("· "+tourneyMeta.source);
+  document.getElementById("meta-label").textContent = parts.join(" ");
+  document.getElementById("btn-refresh").disabled = loading;
+  document.getElementById("btn-refresh").innerHTML = loading ? '<span class="spinner"></span>Loading…' : "↻ Refresh Now";
+  var dot=document.getElementById("live-dot"), lbl=document.getElementById("live-label");
+  if(tourneyMeta.tournament_status==="in_progress"){dot.classList.add("pulsing");lbl.textContent="LIVE";}
+  else if(tourneyMeta.tournament_status==="completed"){dot.classList.remove("pulsing");lbl.textContent="FINAL";}
+  else{dot.classList.remove("pulsing");lbl.textContent="PRE-TOURNAMENT";}
 }
-document.querySelectorAll(".tab").forEach(function(btn) {
-  btn.addEventListener("click", function() { switchTab(btn.getAttribute("data-tab")); });
+
+// ── Render Leaderboard ────────────────────────────────────────────────────────
+function renderLeaderboard() {
+  var el=document.getElementById("tab-leaderboard"), ranked=getRanked(), has=Object.keys(scores).length>0;
+  if (!has) {
+    el.innerHTML='<div class="placeholder">Scores will appear here once the tournament begins<br><span style="font-size:12px;color:#2a4268">Auto-refreshes every 60 minutes · No action needed</span></div>';
+    return;
+  }
+  var html="";
+  for (var i=0; i<ranked.length; i++) {
+    var p=ranked[i], isOpen=openRow===p.name;
+    var numPos=p.rank==="—"?999:parseInt(p.rank.replace("T-",""),10);
+    var rc=numPos===1?"gold":numPos===2?"silver":numPos===3?"bronze":"other";
+    var rowPaid=numPos<=3?" paid-"+numPos:"";
+    var dots="";
+    for(var ti=0;ti<p.picks.length;ti++){
+      var g=p.picks[ti], pend=p.pending.indexOf(g)!==-1, drop=p.dropped.indexOf(g)!==-1;
+      var bg=pend?"#222":drop?"#1a0505":TIER_COLORS[ti];
+      dots+='<div class="lb-dot" style="background:'+bg+';opacity:'+(drop?"0.3":"1")+'" title="T'+(ti+1)+': '+g+'"></div>';
+    }
+    var drows="";
+    for(var ti2=0;ti2<p.picks.length;ti2++){
+      var g2=p.picks[ti2], s2=scores[g2], t2=golferTotal(g2,scores), mc2=s2&&s2.made_cut===false;
+      var inB4=p.used.indexOf(g2)!==-1, isDr=p.dropped.indexOf(g2)!==-1;
+      var roundsPlayed2=tourneyMeta.tournament_status==="completed"?4:(tourneyMeta.current_round||0);
+      var r1v=s2?s2.r1:null, r2v=s2?s2.r2:null;
+      var r3v=mc2?(roundsPlayed2>=3?MC_SCORE:null):(s2?s2.r3:null);
+      var r4v=mc2?(roundsPlayed2>=4?MC_SCORE:null):(s2?s2.r4:null);
+      var rnds2=[r1v,r2v,r3v,r4v], spans="";
+      for(var ri=0;ri<rnds2.length;ri++){
+        var v2=rnds2[ri];
+        if(v2===null||v2===undefined) spans+='<span class="empty-round">·</span>';
+        else if(v2===MC_SCORE&&ri>=2&&mc2) spans+='<span class="mc-round">80</span>';
+        else spans+="<span>"+v2+"</span>";
+      }
+      var posTag=(s2&&s2.espnPos)?'<span class="espn-pos">'+s2.espnPos+'</span>':"";
+      var mcTag=mc2?'<span class="mc-tag">MC</span>':"";
+      var scoreClass=mc2?"sc-mc":inB4?"sc-gold":"sc-drop";
+      var badgeClass=inB4?"badge-count":isDr?"badge-drop":"";
+      var badgeText=inB4?"✓ count":isDr?"✗ drop":"";
+      drows+='<div class="detail-row'+(isDr?" dropped":"")+'"><div class="tier-badge" style="background:'+TIER_COLORS[ti2]+'">T'+(ti2+1)+'</div><div class="detail-golfer">'+g2+mcTag+posTag+'</div><div class="detail-rounds">'+spans+'</div><div class="detail-score '+scoreClass+'">'+(t2!==null?t2:"—")+'</div><div class="detail-badge '+badgeClass+'">'+badgeText+'</div></div>';
+    }
+    var safeN=p.name.replace(/'/g,"\\'");
+    html+='<div class="lb-row'+(isOpen?" open":"")+rowPaid+'" onclick="toggleRow(\''+safeN+'\')"><div class="lb-rank '+rc+'">'+p.rank+'</div><div class="lb-name"><div class="lb-name-main">'+p.name+'</div></div><div class="lb-dots">'+dots+'</div><div class="lb-total'+(p.total===null?" empty":"")+'">'+(p.total!==null?p.total:"—")+'</div><div class="lb-chevron">'+(isOpen?"▲":"▼")+'</div></div><div class="lb-detail'+(isOpen?" open":"")+'"><div class="detail-header">Golfer Scores · Best 4 of 6</div>'+drows+'<div class="detail-footer">Best 4 Total: '+(p.total!==null?p.total:"—")+'</div></div>';
+  }
+  el.innerHTML=html;
+}
+
+// ── Render All Picks ──────────────────────────────────────────────────────────
+function renderPicksView() {
+  var el=document.getElementById("tab-picks-view"), ranked=getRanked(), has=Object.keys(scores).length>0;
+  var html='<div class="picks-grid">';
+  for(var i=0;i<ranked.length;i++){
+    var p=ranked[i], rows="";
+    for(var ti=0;ti<p.picks.length;ti++){
+      var g=p.picks[ti], t=golferTotal(g,scores), mc=scores[g]&&scores[g].made_cut===false;
+      var inB4=p.used.indexOf(g)!==-1, isDr=p.dropped.indexOf(g)!==-1;
+      var sc2=inB4?"ps-count":isDr?"ps-drop":"ps-normal";
+      var chk=has?('<div class="pick-chk '+(inB4?"chk-y":isDr?"chk-n":"")+'">+'+(inB4?"✓":isDr?"✗":"")+'</div>'):"";
+      var mcTag=mc?'<span class="mc-tag">MC</span>':"";
+      rows+='<div class="pick-row" style="opacity:'+(isDr?0.38:1)+'"><div class="pick-dot" style="background:'+TIER_COLORS[ti]+'"></div><div class="pick-golfer">'+g+mcTag+'</div><div class="pick-score '+sc2+'">'+(t!==null?t:"—")+'</div>'+(has?'<div class="pick-chk '+(inB4?"chk-y":isDr?"chk-n":"")+'">+'+(inB4?"✓":isDr?"✗":"")+'</div>':"")+'</div>';
+    }
+    html+='<div class="pick-card"><div class="pick-card-header"><div><div class="pick-card-name">'+p.name+'</div></div><div class="pick-card-rank"><div class="pick-card-rank-label">RANK</div><div class="pick-card-rank-num">'+p.rank+'</div></div></div>'+rows+'<div class="pick-card-footer"><div class="pick-card-label">best 4 of 6</div><div class="pick-card-total'+(p.total===null?" empty":"")+'">'+(p.total!==null?p.total:"—")+'</div></div></div>';
+  }
+  html+="</div>"; el.innerHTML=html;
+}
+
+// ── Render Editor ─────────────────────────────────────────────────────────────
+function renderEditor() {
+  var el=document.getElementById("tab-editor"), cards="";
+  for(var idx=0;idx<POOL.length;idx++) cards+=renderPCard(POOL[idx],idx);
+  el.innerHTML='<div class="editor-toolbar"><h2>✏️ Manage Participants</h2><button class="btn-add" onclick="addParticipant()">+ Add Participant</button></div>'
+    +'<div class="editor-note">Edit participant names and golfer picks. Click <strong>Save Participant</strong> to commit.<br>Golfer names must match exactly, e.g. <em>"Rory McIlroy"</em>. Accents handled automatically.</div>'
+    +cards
+    +'<div class="pwd-section"><h3>🔒 Change Admin Password</h3><div class="pwd-row"><div class="form-group"><label class="form-label">New Password</label><input class="fi" type="password" id="pwd-new" placeholder="New password"/></div><div class="form-group"><label class="form-label">Confirm</label><input class="fi" type="password" id="pwd-confirm" placeholder="Confirm"/></div><button class="btn-change-pwd" onclick="changePassword()">Update</button></div></div>'
+    +'<div class="export-section"><div class="export-section-text"><div class="export-section-title">📥 Export &amp; Deploy</div><div class="export-section-desc">Downloads a fresh <strong>index.html</strong> with current picks baked in — upload to GitHub and everyone sees the latest picks instantly.</div></div><button class="btn-export" onclick="exportSite()">⬇ Export index.html</button></div>'
+    +'<div style="text-align:right;margin-top:8px;"><button class="admin-logout" onclick="doLogout()">🚪 Log out of admin</button></div>';
+}
+
+function renderPCard(p,idx) {
+  var isOpen=editOpen[idx], filled=p.picks.filter(function(x){return !!x;}).length, tiers="";
+  for(var ti=0;ti<6;ti++){
+    tiers+='<div class="tier-row"><div class="tier-lbl"><div class="tier-dot-sm" style="background:'+TIER_COLORS[ti]+'"></div>T'+(ti+1)+'</div><input class="fi" id="pick-'+idx+'-'+ti+'" value="'+(p.picks[ti]||"").replace(/"/g,"&quot;")+'" placeholder="'+TIER_NAMES[ti]+'"/></div>';
+  }
+  return '<div class="pcard" id="pcard-'+idx+'"><div class="pcard-header'+(isOpen?" open":"")+'" onclick="toggleEdit('+idx+')"><div class="pcard-num">'+(idx+1)+'</div><div class="pcard-names"><div class="pcard-name">'+p.name+'</div></div><div class="pcard-summary">'+filled+'/6 picks</div><button class="btn-del" onclick="delParticipant(event,'+idx+')">✕</button><div class="pcard-chevron">'+(isOpen?"▲":"▼")+'</div></div><div class="pcard-form'+(isOpen?" open":"")+'"><div class="form-group"><label class="form-label">Name</label><input class="fi" id="pname-'+idx+'" value="'+p.name.replace(/"/g,"&quot;")+'"/></div><div class="form-group"><label class="form-label">Golfer Picks — one per tier</label></div><div class="tier-grid">'+tiers+'</div><div class="form-actions"><button class="btn-cancel-p" onclick="cancelEdit('+idx+')">Cancel</button><button class="btn-save-p" onclick="saveParticipant('+idx+')">Save Participant</button></div></div></div>';
+}
+
+function toggleEdit(idx){editOpen[idx]=!editOpen[idx];renderEditor();}
+function cancelEdit(idx){editOpen[idx]=false;renderEditor();}
+function saveParticipant(idx){
+  var name=document.getElementById("pname-"+idx).value.trim(), picks=[];
+  for(var ti=0;ti<6;ti++) picks.push(document.getElementById("pick-"+idx+"-"+ti).value.trim());
+  if(!name){alert("Please enter a name.");return;}
+  var missing=[];
+  for(var i=0;i<picks.length;i++){if(!picks[i])missing.push("Tier "+(i+1));}
+  if(missing.length&&!confirm("Missing picks for: "+missing.join(", ")+". Save anyway?")) return;
+  POOL[idx]={name:name, picks:picks};
+  editOpen[idx]=false; savePool(); showToast("✓ Participant saved"); renderEditor();
+}
+function addParticipant(){
+  POOL.push({name:"New Participant",picks:["","","","","",""]});
+  editOpen[POOL.length-1]=true; savePool(); renderEditor();
+  setTimeout(function(){var el=document.getElementById("pcard-"+(POOL.length-1));if(el)el.scrollIntoView({behavior:"smooth"});},100);
+}
+function delParticipant(e,idx){
+  e.stopPropagation();
+  if(!confirm("Remove "+POOL[idx].name+" from the pool?")) return;
+  POOL.splice(idx,1);
+  var no={};
+  Object.keys(editOpen).forEach(function(k){var n=Number(k);if(n<idx)no[k]=editOpen[k];else if(n>idx)no[n-1]=editOpen[k];});
+  editOpen=no; savePool(); renderEditor();
+}
+function changePassword(){
+  var p1=document.getElementById("pwd-new").value, p2=document.getElementById("pwd-confirm").value;
+  if(!p1){alert("Enter a new password.");return;}
+  if(p1!==p2){alert("Passwords don't match.");return;}
+  if(p1.length<4){alert("Password must be at least 4 characters.");return;}
+  localStorage.setItem(PWD_KEY,p1); showToast("✓ Password updated");
+  document.getElementById("pwd-new").value=""; document.getElementById("pwd-confirm").value="";
+}
+function toggleRow(name){openRow=openRow===name?null:name;renderLeaderboard();}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function switchTab(tab){
+  document.querySelectorAll(".tab").forEach(function(b){b.classList.remove("active");});
+  var btn=document.querySelector('[data-tab="'+tab+'"]');
+  if(btn) btn.classList.add("active");
+  activeTab=tab;
+  ["leaderboard","picks-view","editor"].forEach(function(t){
+    document.getElementById("tab-"+t).style.display=t===tab?"":"none";
+  });
+  openRow=null; renderAll();
+}
+document.querySelectorAll(".tab").forEach(function(btn){
+  btn.addEventListener("click",function(){switchTab(btn.getAttribute("data-tab"));});
 });
 
-function renderAll() {
+function renderAll(){
   renderHeader();
-  if (activeTab === "leaderboard")       renderLeaderboard();
-  else if (activeTab === "picks-view")   renderPicksView();
-  else if (activeTab === "editor" && isAdmin) renderEditor();
+  if(activeTab==="leaderboard") renderLeaderboard();
+  else if(activeTab==="picks-view") renderPicksView();
+  else if(activeTab==="editor"&&isAdmin) renderEditor();
 }
 
-// ── Init ─────────────────────────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────────────────────
 renderHeader();
 doRefresh(false);
 </script>
