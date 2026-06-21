@@ -301,20 +301,59 @@ function showToast(msg) {
 }
 
 // ── Scoring ───────────────────────────────────────────────────────────────────
+// Computes the 4 effective round scores for a golfer, applying MC/WD penalties.
+// Returns {r1,r2,r3,r4} where each is either an actual score or the 80 penalty,
+// or null if that round hasn't happened yet (and no penalty applies).
+//
+// Key rule: if a golfer withdrew DURING a round, ESPN may still report a partial
+// in-progress score for that round (e.g. "46" through a handful of holes). That
+// partial score is not a real completed round, so it must also become 80 — the
+// penalty applies to the round of withdrawal itself, not just the rounds after it.
+// We detect this using the "thru" (holes completed) field when available, with an
+// unrealistically-low-score fallback (no real 18-hole round finishes under 50).
+function adjustedRounds(s, roundsPlayed) {
+  var penalized = (s.made_cut === false) || (s.withdrawn === true);
+  var raw = [s.r1, s.r2, s.r3, s.r4];
+
+  // Find the last round index that has any recorded score at all.
+  var lastIdx = -1;
+  for (var i = 0; i < 4; i++) { if (raw[i] != null) lastIdx = i; }
+
+  // If this golfer is penalized (MC or WD) and the last recorded round score is
+  // unrealistically low for a complete 18-hole tournament round, it's actually a
+  // partial/in-progress score captured at the moment they exited — not a real
+  // completed round. No complete round in PGA Tour history has ever been shot
+  // below the mid-50s, so anything under 55 is a safe, conservative signal that
+  // the round was cut short (withdrawal mid-round). We check this regardless of
+  // whether ESPN's own status field says "withdrawn" or "missed cut", since ESPN
+  // doesn't always distinguish these consistently.
+  var lastRoundIsPartial = false;
+  if (penalized && lastIdx !== -1) {
+    if (s.wdIncomplete === true) lastRoundIsPartial = true;
+    else if (s.wdIncomplete !== false && raw[lastIdx] < 55) lastRoundIsPartial = true;
+  }
+
+  var out = [null, null, null, null];
+  for (var i = 0; i < 4; i++) {
+    var roundNum = i + 1;
+    if (lastRoundIsPartial && i === lastIdx) {
+      out[i] = roundsPlayed >= roundNum ? MC_SCORE : null;
+    } else if (raw[i] != null) {
+      out[i] = raw[i];
+    } else if (penalized && roundsPlayed >= roundNum) {
+      out[i] = MC_SCORE;
+    } else {
+      out[i] = null;
+    }
+  }
+  return {r1:out[0], r2:out[1], r3:out[2], r4:out[3], detectedWD:lastRoundIsPartial};
+}
+
 function golferTotal(g, sc) {
   var s = sc[g]; if (!s) return null;
   var roundsPlayed = tourneyMeta.tournament_status === "completed" ? 4 : (tourneyMeta.current_round || 0);
-  // A golfer is "penalized" if they missed the cut OR withdrew. For either case,
-  // any round with no recorded score gets the 80-stroke penalty, but only once
-  // that round has actually started (gated by roundsPlayed) — never for future rounds.
-  // This naturally handles WD at any point: rounds completed before WD keep their
-  // actual score; the round they withdrew during and every round after gets 80.
-  var penalized = (s.made_cut === false) || (s.withdrawn === true);
-  var r1 = s.r1 != null ? s.r1 : (penalized && roundsPlayed >= 1 ? MC_SCORE : null);
-  var r2 = s.r2 != null ? s.r2 : (penalized && roundsPlayed >= 2 ? MC_SCORE : null);
-  var r3 = s.r3 != null ? s.r3 : (penalized && roundsPlayed >= 3 ? MC_SCORE : null);
-  var r4 = s.r4 != null ? s.r4 : (penalized && roundsPlayed >= 4 ? MC_SCORE : null);
-  var rounds = [r1,r2,r3,r4].filter(function(v) { return v !== null; });
+  var adj = adjustedRounds(s, roundsPlayed);
+  var rounds = [adj.r1,adj.r2,adj.r3,adj.r4].filter(function(v) { return v !== null; });
   if (!rounds.length) return null;
   return rounds.reduce(function(a,b) { return a+b; }, 0);
 }
@@ -426,7 +465,19 @@ async function fetchESPN() {
     }
     var espnPos = (c.status && c.status.position && c.status.position.displayName) ||
                   (c.status && c.status.displayValue) || null;
-    parsed[poolName] = {r1:rnds.r1, r2:rnds.r2, r3:rnds.r3, r4:rnds.r4, made_cut:!mc, withdrawn:wd, espnPos:espnPos};
+    // Determine if the WD happened mid-round (partial score) using "thru" holes completed.
+    // thru is typically a number (holes completed) or "F" for finished — anything under
+    // 18 while withdrawn means the last recorded round score is a partial, in-progress
+    // score and not a real completed round.
+    var wdIncomplete = null; // null = unknown, fall back to score-based heuristic
+    if (wd) {
+      var thruRaw = c.status && c.status.thru;
+      var thruNum = null;
+      if (typeof thruRaw === "number") thruNum = thruRaw;
+      else if (typeof thruRaw === "string" && /^\d+$/.test(thruRaw)) thruNum = parseInt(thruRaw, 10);
+      if (thruNum !== null) wdIncomplete = thruNum < 18;
+    }
+    parsed[poolName] = {r1:rnds.r1, r2:rnds.r2, r3:rnds.r3, r4:rnds.r4, made_cut:!mc, withdrawn:wd, wdIncomplete:wdIncomplete, espnPos:espnPos};
   }
   return {tournament_status:tournament_status, current_round:current_round,
           scores:parsed, source:source, last_updated:new Date().toISOString(), note:null};
@@ -585,14 +636,12 @@ function exportExcel() {
     var roundsPlayed = ts==="completed"?4:(tourneyMeta.current_round||0);
     for (var ti2=0; ti2<6; ti2++) {
       var g2=p2.picks[ti2]||"", sc=g2?scores[g2]:null;
-      var mc2=sc&&sc.made_cut===false, wd2=sc&&sc.withdrawn===true, pen2=mc2||wd2;
-      var r1=sc&&sc.r1!=null?sc.r1:(pen2&&roundsPlayed>=1?80:null);
-      var r2=sc&&sc.r2!=null?sc.r2:(pen2&&roundsPlayed>=2?80:null);
-      var r3=sc&&sc.r3!=null?sc.r3:(pen2&&roundsPlayed>=3?80:null);
-      var r4=sc&&sc.r4!=null?sc.r4:(pen2&&roundsPlayed>=4?80:null);
+      var mc2=sc&&sc.made_cut===false, wd2=sc&&sc.withdrawn===true;
+      var adjXl = sc ? adjustedRounds(sc, roundsPlayed) : {r1:null,r2:null,r3:null,r4:null};
+      var r1=adjXl.r1, r2=adjXl.r2, r3=adjXl.r3, r4=adjXl.r4;
       var tot=g2?golferTotal(g2,scores):null;
       var inB4=p2.used.indexOf(g2)!==-1, isDr=p2.dropped.indexOf(g2)!==-1;
-      var tagStr=mc2?" (MC)":(wd2?" (WD)":"");
+      var tagStr=(adjXl.detectedWD||wd2)?" (WD)":(mc2?" (MC)":"");
       detail.push(["Tier "+(ti2+1), g2+tagStr, sc?(sc.espnPos||""):"",
         r1!==null?r1:"", r2!==null?r2:"", r3!==null?r3:"", r4!==null?r4:"",
         tot!==null?tot:"", !g2?"":(inB4?"✓ Count":isDr?"✗ Drop":"")]);
@@ -654,20 +703,17 @@ function renderLeaderboard() {
       var mc2=s2&&s2.made_cut===false, wd2=s2&&s2.withdrawn===true, pen2=mc2||wd2;
       var inB4=p.used.indexOf(g2)!==-1, isDr=p.dropped.indexOf(g2)!==-1;
       var roundsPlayed2=tourneyMeta.tournament_status==="completed"?4:(tourneyMeta.current_round||0);
-      var r1v=s2&&s2.r1!=null?s2.r1:(pen2&&roundsPlayed2>=1?MC_SCORE:null);
-      var r2v=s2&&s2.r2!=null?s2.r2:(pen2&&roundsPlayed2>=2?MC_SCORE:null);
-      var r3v=s2&&s2.r3!=null?s2.r3:(pen2&&roundsPlayed2>=3?MC_SCORE:null);
-      var r4v=s2&&s2.r4!=null?s2.r4:(pen2&&roundsPlayed2>=4?MC_SCORE:null);
-      var rnds2=[r1v,r2v,r3v,r4v], spans="";
+      var adj2 = s2 ? adjustedRounds(s2, roundsPlayed2) : {r1:null,r2:null,r3:null,r4:null};
+      var rnds2=[adj2.r1,adj2.r2,adj2.r3,adj2.r4], spans="";
       for(var ri=0;ri<rnds2.length;ri++){
         var v2=rnds2[ri];
-        var isActual = s2 && s2["r"+(ri+1)] != null;
+        var isActual = s2 && s2["r"+(ri+1)] != null && v2 === s2["r"+(ri+1)];
         if(v2===null||v2===undefined) spans+='<span class="empty-round">·</span>';
         else if(v2===MC_SCORE && !isActual && pen2) spans+='<span class="mc-round">80</span>';
         else spans+="<span>"+v2+"</span>";
       }
       var posTag=(s2&&s2.espnPos)?'<span class="espn-pos">'+s2.espnPos+'</span>':"";
-      var mcTag=mc2?'<span class="mc-tag">MC</span>':(wd2?'<span class="mc-tag">WD</span>':"");
+      var mcTag=(adj2.detectedWD || wd2)?'<span class="mc-tag">WD</span>':(mc2?'<span class="mc-tag">MC</span>':"");
       var scoreClass=pen2?"sc-mc":inB4?"sc-gold":"sc-drop";
       var badgeClass=inB4?"badge-count":isDr?"badge-drop":"";
       var badgeText=inB4?"✓ count":isDr?"✗ drop":"";
@@ -687,10 +733,12 @@ function renderPicksView() {
     var p=ranked[i], rows="";
     for(var ti=0;ti<p.picks.length;ti++){
       var g=p.picks[ti], t=golferTotal(g,scores), mc=scores[g]&&scores[g].made_cut===false, wd=scores[g]&&scores[g].withdrawn===true;
+      var roundsPlayedPV=tourneyMeta.tournament_status==="completed"?4:(tourneyMeta.current_round||0);
+      var detectedWD = scores[g] ? adjustedRounds(scores[g], roundsPlayedPV).detectedWD : false;
       var inB4=p.used.indexOf(g)!==-1, isDr=p.dropped.indexOf(g)!==-1;
       var sc2=inB4?"ps-count":isDr?"ps-drop":"ps-normal";
       var chk=has?('<div class="pick-chk '+(inB4?"chk-y":isDr?"chk-n":"")+'">+'+(inB4?"✓":isDr?"✗":"")+'</div>'):"";
-      var mcTag=mc?'<span class="mc-tag">MC</span>':(wd?'<span class="mc-tag">WD</span>':"");
+      var mcTag=(detectedWD||wd)?'<span class="mc-tag">WD</span>':(mc?'<span class="mc-tag">MC</span>':"");
       rows+='<div class="pick-row" style="opacity:'+(isDr?0.38:1)+'"><div class="pick-dot" style="background:'+TIER_COLORS[ti]+'"></div><div class="pick-golfer">'+g+mcTag+'</div><div class="pick-score '+sc2+'">'+(t!==null?t:"—")+'</div>'+(has?'<div class="pick-chk '+(inB4?"chk-y":isDr?"chk-n":"")+'">+'+(inB4?"✓":isDr?"✗":"")+'</div>':"")+'</div>';
     }
     html+='<div class="pick-card"><div class="pick-card-header"><div><div class="pick-card-name">'+p.name+'</div></div><div class="pick-card-rank"><div class="pick-card-rank-label">RANK</div><div class="pick-card-rank-num">'+p.rank+'</div></div></div>'+rows+'<div class="pick-card-footer"><div class="pick-card-label">best 4 of 6</div><div class="pick-card-total'+(p.total===null?" empty":"")+'">'+(p.total!==null?p.total:"—")+'</div></div></div>';
