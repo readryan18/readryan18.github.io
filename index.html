@@ -245,7 +245,7 @@
 <script>
 // ── Config ────────────────────────────────────────────────────────────────────
 var AUTO_REFRESH_MS  = 60 * 60 * 1000;
-var POOL_KEY         = "usopen_pool_participants_v1";
+var POOL_KEY         = "usopen_pool_participants_v2";
 var PWD_KEY          = "usopen_pool_admin_pwd_v1";
 var DEFAULT_PASSWORD = "usopen2026";
 var TIER_COLORS      = ["#c9a227","#4a9eca","#a07cc5","#e07b5a","#5ab87a","#b5c75a"];
@@ -256,18 +256,18 @@ var MC_SCORE         = 80;
 var FIELD_PLAYERS = ["Scottie Scheffler", "Rory McIlroy", "Jon Rahm", "Cameron Young", "Matt Fitzpatrick", "Tommy Fleetwood", "Xander Schauffele", "Ludvig Aberg", "Russell Henley", "Si Woo Kim", "Patrick Cantlay", "Sam Burns", "J.J. Spaun", "Maverick McNealy", "Collin Morikawa", "Chris Gotterup", "Harris English", "Wyndham Clark", "Bryson DeChambeau", "Adam Scott", "Justin Thomas", "Jake Knapp", "Viktor Hovland", "Ben Griffin", "Kurt Kitayama", "Shane Lowry", "Ryan Gerard", "Alex Noren", "Robert MacIntyre", "Min Woo Lee", "Justin Rose", "Patrick Reed", "Hideki Matsuyama", "Alex Fitzpatrick", "Alex Smalley", "Kristoffer Reitan", "Tyrrell Hatton", "Bud Cauley", "Keegan Bradley", "Jordan Spieth", "Nicolai Hojgaard", "David Puig", "Aaron Rai", "Akshay Bhatia", "Jacob Bridgeman", "J.T. Poston", "Jackson Koivun", "Gary Woodland", "Harry Hall", "Rickie Fowler", "Sepp Straka", "Ryan Fox", "Joaquin Niemann", "Keith Mitchell", "Nick Taylor", "Brooks Koepka", "Jason Day", "Matt McCarty", "Brian Harman", "Michael Kim", "Jayden Schaper", "Andrew Putnam", "Daniel Berger", "Dustin Johnson", "Sahith Theegala", "Pierceson Coody", "Sudarshan Yellamaraju", "Davis Thompson", "Andrew Novak", "Cameron Smith", "Corey Conners", "Sam Stevens", "Tom Kim", "Lucas Herbert", "Max Greyserman", "Sungjae Im", "Ryo Hisatsune", "Max McGreevy", "Michael Brennan", "Chris Kirk", "Nico Echavarria", "William Mouw", "Patrick Rodgers", "Matti Schmid", "Cooper Dossey", "Johnny Keefer", "Carlos Ortiz", "Billy Horschel", "Ben James", "Ben Kohles", "Adrien Dumont De Chassart", "Jackson Suber", "Ugo Coussaud", "John Parry", "Preston Stout", "Emiliano Grillo", "Hennie Du Plessis", "Nathan Kimsey", "Zac Blair", "Kevin Roy", "Adrien Saddier", "Matthew Jordan", "Laurie Canter", "Caleb Surratt", "Chandler Phillips", "Neal Shipley", "Dylan Wu", "Cole Hammer", "Ben Silverman", "Miles Russell", "Peter Uihlein", "James Nicholas", "Jimmy Stanger", "Taihei Sato", "Taylor Montgomery", "Niklas Norgaard", "Nick Hardy", "Harry Higgs", "Carl Yuan", "Graeme McDowell", "Marcelo Rozo", "Alejandro Tosti", "Padraig Harrington", "Ryder Cowan", "Jackson Van Paris", "Angel Hidalgo Portillo", "Brandon Holtz", "Brandon Wu", "Bryan Lee", "Chase Kyes", "Eric Lee", "Ethan Fang", "Filippo Celli", "Giuseppe Puebla", "Greyson Leach", "Gunnlaugur Arni Sveinsson", "Hamilton Coleman", "J.B. Holmes", "Jack Schoenberger", "Jackson Herrington", "Jackson Ormond", "Jake Peacock", "Jake Sollon", "Kaito Onishi", "Logan Reilly", "Manav Shah", "Marek Fleming", "Mason Howell", "Mateo Pulcini", "Matt Robles", "Robbie Higgins", "Rocco Paolo Repetto Taylor", "Ryuichi Oiwa", "Spencer Tibbits", "T.K. Kim", "Vaughn Harber"];
 
 var DEFAULT_POOL = [
-  {name:"Ryan",   picks:["","","","","",""]},
-  {name:"Joey",   picks:["","","","","",""]},
-  {name:"Adam",   picks:["","","","","",""]},
-  {name:"Gabe",   picks:["","","","","",""]},
-  {name:"Blake",  picks:["","","","","",""]},
-  {name:"Andrew", picks:["","","","","",""]},
-  {name:"Andy",   picks:["","","","","",""]},
-  {name:"Erik",   picks:["","","","","",""]},
-  {name:"Alvin",  picks:["","","","","",""]},
-  {name:"Madani", picks:["","","","","",""]},
-  {name:"Nick",   picks:["","","","","",""]},
-  {name:"Dale",   picks:["","","","","",""]}
+  {name:"Ryan",   picks:["Xander Schauffele","Adam Scott","Ryan Gerard","Patrick Reed","Gary Woodland","Daniel Berger"]},
+  {name:"Joey",   picks:["Matt Fitzpatrick","Wyndham Clark","Justin Thomas","Tyrrell Hatton","Gary Woodland","Jason Day"]},
+  {name:"Adam",   picks:["Scottie Scheffler","Bryson DeChambeau","Viktor Hovland","Tyrrell Hatton","Aaron Rai","Brooks Koepka"]},
+  {name:"Gabe",   picks:["Xander Schauffele","Sam Burns","Justin Thomas","Hideki Matsuyama","Gary Woodland","Brooks Koepka"]},
+  {name:"Blake",  picks:["Scottie Scheffler","Bryson DeChambeau","Jake Knapp","Keegan Bradley","Gary Woodland","Brooks Koepka"]},
+  {name:"Andrew", picks:["Tommy Fleetwood","Collin Morikawa","Chris Gotterup","Tyrrell Hatton","David Puig","Brooks Koepka"]},
+  {name:"Andy",   picks:["Scottie Scheffler","Patrick Cantlay","Shane Lowry","Justin Rose","David Puig","Brooks Koepka"]},
+  {name:"Erik",   picks:["Cameron Young","J.J. Spaun","Justin Thomas","Alex Fitzpatrick","Akshay Bhatia","Jason Day"]},
+  {name:"Alvin",  picks:["Scottie Scheffler","Collin Morikawa","Viktor Hovland","Hideki Matsuyama","Akshay Bhatia","Brooks Koepka"]},
+  {name:"Madani", picks:["Scottie Scheffler","Bryson DeChambeau","Viktor Hovland","Hideki Matsuyama","Aaron Rai","Brooks Koepka"]},
+  {name:"Nick",   picks:["Scottie Scheffler","Collin Morikawa","Robert MacIntyre","Tyrrell Hatton","Aaron Rai","Billy Horschel"]},
+  {name:"Dale",   picks:["Scottie Scheffler","J.J. Spaun","Shane Lowry","Hideki Matsuyama","Akshay Bhatia","Cameron Smith"]}
 ];
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -304,10 +304,16 @@ function showToast(msg) {
 function golferTotal(g, sc) {
   var s = sc[g]; if (!s) return null;
   var roundsPlayed = tourneyMeta.tournament_status === "completed" ? 4 : (tourneyMeta.current_round || 0);
-  var r1 = s.r1 != null ? s.r1 : null;
-  var r2 = s.r2 != null ? s.r2 : null;
-  var r3 = s.made_cut === false ? (roundsPlayed >= 3 ? MC_SCORE : null) : (s.r3 != null ? s.r3 : null);
-  var r4 = s.made_cut === false ? (roundsPlayed >= 4 ? MC_SCORE : null) : (s.r4 != null ? s.r4 : null);
+  // A golfer is "penalized" if they missed the cut OR withdrew. For either case,
+  // any round with no recorded score gets the 80-stroke penalty, but only once
+  // that round has actually started (gated by roundsPlayed) — never for future rounds.
+  // This naturally handles WD at any point: rounds completed before WD keep their
+  // actual score; the round they withdrew during and every round after gets 80.
+  var penalized = (s.made_cut === false) || (s.withdrawn === true);
+  var r1 = s.r1 != null ? s.r1 : (penalized && roundsPlayed >= 1 ? MC_SCORE : null);
+  var r2 = s.r2 != null ? s.r2 : (penalized && roundsPlayed >= 2 ? MC_SCORE : null);
+  var r3 = s.r3 != null ? s.r3 : (penalized && roundsPlayed >= 3 ? MC_SCORE : null);
+  var r4 = s.r4 != null ? s.r4 : (penalized && roundsPlayed >= 4 ? MC_SCORE : null);
   var rounds = [r1,r2,r3,r4].filter(function(v) { return v !== null; });
   if (!rounds.length) return null;
   return rounds.reduce(function(a,b) { return a+b; }, 0);
@@ -401,7 +407,14 @@ async function fetchESPN() {
     var poolName = nameMap[normName(espnName)];
     if (!poolName) continue;
     var statusTypeName = (c.status && c.status.type && c.status.type.name) || "";
+    var statusAbbrev = (c.status && c.status.type && c.status.type.abbreviation) || "";
+    var statusDisplay = (c.status && c.status.displayValue) || "";
     var mc = statusTypeName==="STATUS_CUT" || statusTypeName==="STATUS_MISSED_CUT";
+    // Detect withdrawal defensively across possible ESPN field formats
+    var wd = statusTypeName.indexOf("WITHDR")!==-1 ||
+             statusAbbrev.toUpperCase()==="WD" ||
+             statusDisplay.toUpperCase()==="WD" ||
+             statusDisplay.toUpperCase().indexOf("WITHDR")!==-1;
     var rnds = {r1:null,r2:null,r3:null,r4:null};
     var ls = c.linescores || [];
     for (var li=0; li<ls.length && li<4; li++) {
@@ -413,7 +426,7 @@ async function fetchESPN() {
     }
     var espnPos = (c.status && c.status.position && c.status.position.displayName) ||
                   (c.status && c.status.displayValue) || null;
-    parsed[poolName] = {r1:rnds.r1, r2:rnds.r2, r3:rnds.r3, r4:rnds.r4, made_cut:!mc, espnPos:espnPos};
+    parsed[poolName] = {r1:rnds.r1, r2:rnds.r2, r3:rnds.r3, r4:rnds.r4, made_cut:!mc, withdrawn:wd, espnPos:espnPos};
   }
   return {tournament_status:tournament_status, current_round:current_round,
           scores:parsed, source:source, last_updated:new Date().toISOString(), note:null};
@@ -555,7 +568,8 @@ function exportExcel() {
     for (var ti=0; ti<6; ti++) {
       var g=p.picks[ti]||"", t=g?golferTotal(g,scores):null;
       var mc=g&&scores[g]&&scores[g].made_cut===false;
-      row.push(g); row.push(t!==null ? (mc?t+" (MC)":t) : (g?"—":""));
+      var wd=g&&scores[g]&&scores[g].withdrawn===true;
+      row.push(g); row.push(t!==null ? (mc?t+" (MC)":wd?t+" (WD)":t) : (g?"—":""));
     }
     lb.push(row);
   }
@@ -570,13 +584,16 @@ function exportExcel() {
     detail.push(["Tier","Golfer","Position","R1","R2","R3","R4","Total","Counts?"]);
     var roundsPlayed = ts==="completed"?4:(tourneyMeta.current_round||0);
     for (var ti2=0; ti2<6; ti2++) {
-      var g2=p2.picks[ti2]||"", sc=g2?scores[g2]:null, mc2=sc&&sc.made_cut===false;
-      var r1=sc?sc.r1:null, r2=sc?sc.r2:null;
-      var r3=mc2?(roundsPlayed>=3?80:null):(sc?sc.r3:null);
-      var r4=mc2?(roundsPlayed>=4?80:null):(sc?sc.r4:null);
+      var g2=p2.picks[ti2]||"", sc=g2?scores[g2]:null;
+      var mc2=sc&&sc.made_cut===false, wd2=sc&&sc.withdrawn===true, pen2=mc2||wd2;
+      var r1=sc&&sc.r1!=null?sc.r1:(pen2&&roundsPlayed>=1?80:null);
+      var r2=sc&&sc.r2!=null?sc.r2:(pen2&&roundsPlayed>=2?80:null);
+      var r3=sc&&sc.r3!=null?sc.r3:(pen2&&roundsPlayed>=3?80:null);
+      var r4=sc&&sc.r4!=null?sc.r4:(pen2&&roundsPlayed>=4?80:null);
       var tot=g2?golferTotal(g2,scores):null;
       var inB4=p2.used.indexOf(g2)!==-1, isDr=p2.dropped.indexOf(g2)!==-1;
-      detail.push(["Tier "+(ti2+1), g2+(mc2?" (MC)":""), sc?(sc.espnPos||""):"",
+      var tagStr=mc2?" (MC)":(wd2?" (WD)":"");
+      detail.push(["Tier "+(ti2+1), g2+tagStr, sc?(sc.espnPos||""):"",
         r1!==null?r1:"", r2!==null?r2:"", r3!==null?r3:"", r4!==null?r4:"",
         tot!==null?tot:"", !g2?"":(inB4?"✓ Count":isDr?"✗ Drop":"")]);
     }
@@ -633,22 +650,25 @@ function renderLeaderboard() {
     }
     var drows="";
     for(var ti2=0;ti2<p.picks.length;ti2++){
-      var g2=p.picks[ti2], s2=scores[g2], t2=golferTotal(g2,scores), mc2=s2&&s2.made_cut===false;
+      var g2=p.picks[ti2], s2=scores[g2], t2=golferTotal(g2,scores);
+      var mc2=s2&&s2.made_cut===false, wd2=s2&&s2.withdrawn===true, pen2=mc2||wd2;
       var inB4=p.used.indexOf(g2)!==-1, isDr=p.dropped.indexOf(g2)!==-1;
       var roundsPlayed2=tourneyMeta.tournament_status==="completed"?4:(tourneyMeta.current_round||0);
-      var r1v=s2?s2.r1:null, r2v=s2?s2.r2:null;
-      var r3v=mc2?(roundsPlayed2>=3?MC_SCORE:null):(s2?s2.r3:null);
-      var r4v=mc2?(roundsPlayed2>=4?MC_SCORE:null):(s2?s2.r4:null);
+      var r1v=s2&&s2.r1!=null?s2.r1:(pen2&&roundsPlayed2>=1?MC_SCORE:null);
+      var r2v=s2&&s2.r2!=null?s2.r2:(pen2&&roundsPlayed2>=2?MC_SCORE:null);
+      var r3v=s2&&s2.r3!=null?s2.r3:(pen2&&roundsPlayed2>=3?MC_SCORE:null);
+      var r4v=s2&&s2.r4!=null?s2.r4:(pen2&&roundsPlayed2>=4?MC_SCORE:null);
       var rnds2=[r1v,r2v,r3v,r4v], spans="";
       for(var ri=0;ri<rnds2.length;ri++){
         var v2=rnds2[ri];
+        var isActual = s2 && s2["r"+(ri+1)] != null;
         if(v2===null||v2===undefined) spans+='<span class="empty-round">·</span>';
-        else if(v2===MC_SCORE&&ri>=2&&mc2) spans+='<span class="mc-round">80</span>';
+        else if(v2===MC_SCORE && !isActual && pen2) spans+='<span class="mc-round">80</span>';
         else spans+="<span>"+v2+"</span>";
       }
       var posTag=(s2&&s2.espnPos)?'<span class="espn-pos">'+s2.espnPos+'</span>':"";
-      var mcTag=mc2?'<span class="mc-tag">MC</span>':"";
-      var scoreClass=mc2?"sc-mc":inB4?"sc-gold":"sc-drop";
+      var mcTag=mc2?'<span class="mc-tag">MC</span>':(wd2?'<span class="mc-tag">WD</span>':"");
+      var scoreClass=pen2?"sc-mc":inB4?"sc-gold":"sc-drop";
       var badgeClass=inB4?"badge-count":isDr?"badge-drop":"";
       var badgeText=inB4?"✓ count":isDr?"✗ drop":"";
       drows+='<div class="detail-row'+(isDr?" dropped":"")+'"><div class="tier-badge" style="background:'+TIER_COLORS[ti2]+'">T'+(ti2+1)+'</div><div class="detail-golfer">'+g2+mcTag+posTag+'</div><div class="detail-rounds">'+spans+'</div><div class="detail-score '+scoreClass+'">'+(t2!==null?t2:"—")+'</div><div class="detail-badge '+badgeClass+'">'+badgeText+'</div></div>';
@@ -666,11 +686,11 @@ function renderPicksView() {
   for(var i=0;i<ranked.length;i++){
     var p=ranked[i], rows="";
     for(var ti=0;ti<p.picks.length;ti++){
-      var g=p.picks[ti], t=golferTotal(g,scores), mc=scores[g]&&scores[g].made_cut===false;
+      var g=p.picks[ti], t=golferTotal(g,scores), mc=scores[g]&&scores[g].made_cut===false, wd=scores[g]&&scores[g].withdrawn===true;
       var inB4=p.used.indexOf(g)!==-1, isDr=p.dropped.indexOf(g)!==-1;
       var sc2=inB4?"ps-count":isDr?"ps-drop":"ps-normal";
       var chk=has?('<div class="pick-chk '+(inB4?"chk-y":isDr?"chk-n":"")+'">+'+(inB4?"✓":isDr?"✗":"")+'</div>'):"";
-      var mcTag=mc?'<span class="mc-tag">MC</span>':"";
+      var mcTag=mc?'<span class="mc-tag">MC</span>':(wd?'<span class="mc-tag">WD</span>':"");
       rows+='<div class="pick-row" style="opacity:'+(isDr?0.38:1)+'"><div class="pick-dot" style="background:'+TIER_COLORS[ti]+'"></div><div class="pick-golfer">'+g+mcTag+'</div><div class="pick-score '+sc2+'">'+(t!==null?t:"—")+'</div>'+(has?'<div class="pick-chk '+(inB4?"chk-y":isDr?"chk-n":"")+'">+'+(inB4?"✓":isDr?"✗":"")+'</div>':"")+'</div>';
     }
     html+='<div class="pick-card"><div class="pick-card-header"><div><div class="pick-card-name">'+p.name+'</div></div><div class="pick-card-rank"><div class="pick-card-rank-label">RANK</div><div class="pick-card-rank-num">'+p.rank+'</div></div></div>'+rows+'<div class="pick-card-footer"><div class="pick-card-label">best 4 of 6</div><div class="pick-card-total'+(p.total===null?" empty":"")+'">'+(p.total!==null?p.total:"—")+'</div></div></div>';
